@@ -3,8 +3,8 @@ import uuid
 from datetime import datetime
 
 class Newsletter(SQLModel, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4(), primary_key=True, unique=True)
-    user: uuid.UUID = Field(foreign_key='fiefuser.id')
+    id: uuid.UUID = Field(default=uuid.uuid4(), primary_key=True, unique=True)
+    user: uuid.UUID = Field(foreign_key='user.id')
     name: str | None = Field(default='')
-    created_at: datetime = Field(default_factory=datetime.now())
-    updated_at: datetime = Field(default_factory=None)
+    created_at: datetime = Field(default=datetime.now())
+    updated_at: datetime = Field(default=None)
