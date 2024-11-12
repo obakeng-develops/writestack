@@ -19,7 +19,7 @@ router = APIRouter(
 SessionDep = Annotated[Session, Depends(get_session)]
 
 @router.get("/{newsletter_id}")
-async def get_newsletter(newsletter_id: Newsletter, session: SessionDep) -> Newsletter:
+async def get_newsletter(newsletter_id: int, session: SessionDep) -> Newsletter:
     newsletter = session.get(Newsletter, newsletter_id)
 
     if newsletter is None:
@@ -28,7 +28,7 @@ async def get_newsletter(newsletter_id: Newsletter, session: SessionDep) -> News
     return newsletter
 
 @router.patch("/{newsletter_id}")
-async def update_newsletter(newsletter_id: id, updated_newsletter: Newsletter, session: SessionDep) -> Newsletter:
+async def update_newsletter(newsletter_id: int, updated_newsletter: Newsletter, session: SessionDep) -> Newsletter:
     newsletter = session.get(newsletter, newsletter_id)
 
     if newsletter is None:
