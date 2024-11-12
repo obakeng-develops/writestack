@@ -1,19 +1,15 @@
 from fastapi import FastAPI
 
-from sqlmodel import SQLModel, create_engine
-from models.newsletter import Newsletter
-from models.user import User
+from sqlmodel import SQLModel
 from models.comment import Comment
 from models.post import Post
 from models.subscription import Subscription
 from dotenv import load_dotenv
-from routers.v1 import newsletter
+from routers.v1 import newsletter, user
+from database import engine
 import os
 
 load_dotenv()
-
-postgres_url = os.getenv("POSTGRES_URL")
-engine = create_engine(postgres_url)
 
 def create_tables():
     SQLModel.metadata.create_all(engine)
@@ -25,3 +21,4 @@ def on_startup():
     create_tables()
 
 app.include_router(newsletter.router)
+app.include_router(user.router)
