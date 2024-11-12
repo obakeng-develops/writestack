@@ -1,7 +1,7 @@
 from sqlmodel import create_engine, Session, SQLModel
+import os
 
-postgres_db = "mino"
-postgres_url = f"postgresql://obakeng:12348765@localhost:5432/{postgres_db}"
+postgres_url = os.getenv("POSTGRES_URL")
 engine = create_engine(postgres_url)
 
 def create_db_and_tables():
