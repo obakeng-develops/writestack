@@ -22,9 +22,3 @@ app = FastAPI()
 @app.on_event("startup")
 def on_startup():
     create_tables()
-
-@app.get("/")
-def index():
-    return {
-        "message": "Hello World"
-    }
