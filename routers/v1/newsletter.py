@@ -29,12 +29,12 @@ async def get_newsletter(newsletter_id: int, session: SessionDep) -> Newsletter:
 
 @router.patch("/{newsletter_id}")
 async def update_newsletter(newsletter_id: int, updated_newsletter: Newsletter, session: SessionDep) -> Newsletter:
-    newsletter = session.get(newsletter, newsletter_id)
+    newsletter = session.get(Newsletter, newsletter_id)
 
     if newsletter is None:
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
-    newsletter.name = update_newsletter.name 
+    newsletter.name = updated_newsletter.name 
     newsletter.updated_at = datetime.now()
 
     session.commit()
