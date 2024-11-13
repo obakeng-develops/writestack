@@ -1,7 +1,7 @@
 from sqlmodel import create_engine, Session, SQLModel
 import os
 
-postgres_url = "postgresql://obakeng:12348765@localhost:5432/writestack"
+postgres_url = "sqlite:///writestack.db"
 engine = create_engine(postgres_url)
 
 def create_tables():
