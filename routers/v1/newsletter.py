@@ -1,14 +1,14 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import Session, select
 from database import get_session
 from models.newsletter import Newsletter
+from models.post import Post
 from datetime import datetime
 
 router = APIRouter(
-    prefix="/newsletter",
-    tags=["newsletter"],
+    prefix="/newsletters",
+    tags=["newsletters"],
     responses={
         404: {
             "description": "Not found"
@@ -26,6 +26,15 @@ async def get_newsletter(newsletter_id: int, session: SessionDep) -> Newsletter:
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
     return newsletter
+
+@router.get("/posts")
+async def get_posts_by_newsletter(newsletter_id: int, session: SessionDep) -> List[Post]:
+    posts = session.exec(select(Post).where(Post.newsletter == newsletter_id)).all()
+
+    if posts is None:
+        raise HTTPException(status_code=404, details='There are no posts')
+
+    return posts
 
 @router.patch("/{newsletter_id}")
 async def update_newsletter(newsletter_id: int, updated_newsletter: Newsletter, session: SessionDep) -> Newsletter:
