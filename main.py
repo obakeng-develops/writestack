@@ -5,7 +5,7 @@ from models.comment import Comment
 from models.post import Post
 from models.subscription import Subscription
 from dotenv import load_dotenv
-from routers.v1 import newsletter, user
+from routers.v1 import newsletter, user, post, subscriptions
 from helpers.database import engine, create_tables
 import os
 
@@ -19,3 +19,5 @@ def on_startup():
 
 app.include_router(newsletter.router)
 app.include_router(user.router)
+app.include_router(post.router)
+app.include_router(subscriptions.router)
