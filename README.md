@@ -20,3 +20,14 @@ Following those blog posts, you can learn:
 - SLOs/SLIs
     - Creating SLOs/SLIs
     - Using them to prioritize what to work on next
+
+## The architecture
+It has a very simple architecture.
+![composition](https://github.com/user-attachments/assets/a3320abe-3098-46a0-96d4-a25194ebda09)
+
+Backend: FastAPI
+Frontend: Svelte
+Store: Postgres
+
+## The data model
+![writestack](https://github.com/user-attachments/assets/d5b81c12-d188-45cc-a25f-e6de17b8e3fd)
