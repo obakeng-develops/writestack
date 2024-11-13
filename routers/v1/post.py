@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
+from sqlmodel import Session, select
 from database import get_session
 from models.post import Post
+from models.comment import Comment
 from datetime import datetime
 from typing import Annotated
+import uuid
+from typing import List
 
 router = APIRouter(
     prefix="/posts",
@@ -39,6 +42,15 @@ async def delete_post(post_id: int, session: SessionDep):
     return {
         "message": "Post deleted successfully."
     }
+
+@router.get("/comments/{post_id}")
+async def get_all_comments_for_post(post_id: uuid.UUID, session: SessionDep) -> List[Comment]:
+    comments = session.exec(select(Comment).where(Comment.post == post_id)).all()
+
+    if comments is None:
+        raise HTTPException(status_code=404, detail='Comments not found')
+    
+    return comments
 
 @router.post("/")
 async def create_post(post: Post, session: SessionDep) -> Post:
