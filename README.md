@@ -20,6 +20,8 @@ Following those blog posts, you can learn:
 - SLOs/SLIs
     - Creating SLOs/SLIs
     - Using them to prioritize what to work on next
+- Alerting
+    - Designing alerts using SLOs.
 
 ## The architecture
 It has a very simple architecture.
