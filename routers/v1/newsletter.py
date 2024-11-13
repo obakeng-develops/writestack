@@ -27,7 +27,7 @@ async def get_newsletter(newsletter_id: int, session: SessionDep) -> Newsletter:
     
     return newsletter
 
-@router.get("/posts")
+@router.get("/posts/{newsletter_id}")
 async def get_posts_by_newsletter(newsletter_id: int, session: SessionDep) -> List[Post]:
     posts = session.exec(select(Post).where(Post.newsletter == newsletter_id)).all()
 
