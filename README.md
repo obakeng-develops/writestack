@@ -23,6 +23,7 @@ Following those blog posts, you can learn:
 
 ## The architecture
 It has a very simple architecture.
+
 ![composition](https://github.com/user-attachments/assets/a3320abe-3098-46a0-96d4-a25194ebda09)
 
 - Backend
