@@ -1,8 +1,10 @@
-from typing import Annotated
+from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from models.user import User
+from models.newsletter import Newsletter
 from helpers.database import get_session
+import uuid
 
 router = APIRouter(
     prefix="/users",
@@ -47,3 +49,11 @@ async def update_user(user_id: int, updated_user: User, session: SessionDep) -> 
     session.refresh()
     return user
 
+@router.get("/newsletters/{user_id}")
+async def get_newsletters_for_users(user_id: uuid.UUID, session: SessionDep) -> List[Newsletter]:
+    newsletters = session.exec(select(Newsletter).where(Newsletter.user == user_id)).all()
+
+    if newsletters is None:
+        raise HTTPException(status_code=404, detail='No newsletters found')
+
+    return newsletters
