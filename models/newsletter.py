@@ -1,4 +1,4 @@
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Field, SQLModel
 import uuid
 from datetime import datetime
 from helpers.generate_uuid import generate_uuid

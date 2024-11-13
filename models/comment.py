@@ -1,6 +1,5 @@
 from sqlmodel import SQLModel, Field
 import uuid
-from datetime import datetime
 from helpers.generate_uuid import generate_uuid
 
 class Comment(SQLModel, table=True):
