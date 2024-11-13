@@ -6,7 +6,7 @@ from models.post import Post
 from models.subscription import Subscription
 from dotenv import load_dotenv
 from routers.v1 import newsletter, user
-from database import engine, create_tables
+from helpers.database import engine, create_tables
 import os
 
 load_dotenv()
