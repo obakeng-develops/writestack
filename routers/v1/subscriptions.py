@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from database import get_session
+from helpers.database import get_session
 from models.subscription import Subscription
 from typing import Annotated
 

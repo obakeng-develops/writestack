@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from database import get_session
+from helpers.database import get_session
 from models.post import Post
 from models.comment import Comment
 from datetime import datetime

@@ -1,7 +1,7 @@
 from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from database import get_session
+from helpers.database import get_session
 from models.newsletter import Newsletter
 from models.post import Post
 from datetime import datetime
