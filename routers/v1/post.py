@@ -20,7 +20,7 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.get("/")
+@router.get("/{post_id}")
 async def get_post(post_id: int, session: SessionDep) -> Post:
     post = session.get(Post, post_id)
 
