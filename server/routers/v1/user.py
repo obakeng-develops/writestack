@@ -29,7 +29,7 @@ async def create_user(user: User, session: SessionDep) -> User:
 async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
-    if user is None:
+    if not user:
         raise HTTPException(status_code=404, detail='User not found')
     
     return user
@@ -38,7 +38,7 @@ async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
 async def update_user(user_uuid: uuid.UUID, updated_user: User, session: SessionDep) -> User:
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
-    if user is None:
+    if not user:
         raise HTTPException(status_code=404, detail='User not found')
     
     user.first_name = updated_user.first_name
@@ -53,7 +53,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: User, session: Session
 async def get_newsletters_for_users(user_uuid: uuid.UUID, session: SessionDep) -> List[Newsletter]:
     newsletters = session.exec(select(Newsletter).where(Newsletter.user == user_uuid)).all()
 
-    if newsletters is None:
+    if not newsletters:
         raise HTTPException(status_code=404, detail='No newsletters found')
 
     return newsletters

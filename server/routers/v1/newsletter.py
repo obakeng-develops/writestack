@@ -23,7 +23,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> Newsletter:
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
-    if newsletter is None:
+    if not newsletter:
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
     return newsletter
@@ -32,7 +32,7 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> New
 async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> List[Post]:
     posts = session.exec(select(Post).where(Post.newsletter == newsletter_uuid)).all()
 
-    if posts is None:
+    if not posts:
         raise HTTPException(status_code=404, details='There are no posts')
 
     return posts
@@ -41,7 +41,7 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDe
 async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: Newsletter, session: SessionDep) -> Newsletter:
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
-    if newsletter is None:
+    if not newsletter:
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
     newsletter.name = updated_newsletter.name 
