@@ -21,7 +21,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 @router.get("/{newsletter_uuid}")
 async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> Newsletter:
-    newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid))
+    newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
     if newsletter is None:
         raise HTTPException(status_code=404, detail='Newsletter not found')
@@ -39,7 +39,7 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDe
 
 @router.patch("/{newsletter_uuid}")
 async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: Newsletter, session: SessionDep) -> Newsletter:
-    newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid))
+    newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
     if newsletter is None:
         raise HTTPException(status_code=404, detail='Newsletter not found')
