@@ -22,7 +22,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 @router.get("/{post_uuid}")
 async def get_post(post_uuid: uuid.UUID, session: SessionDep) -> Post:
-    post = session.get(Post, post_uuid)
+    post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if post is None:
         raise HTTPException(status_code=404, detail='Post not found')
@@ -31,7 +31,7 @@ async def get_post(post_uuid: uuid.UUID, session: SessionDep) -> Post:
 
 @router.delete("/{post_uuid}")
 async def delete_post(post_uuid: uuid.UUID, session: SessionDep):
-    post = session.get(Post, post_uuid)
+    post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if post is None:
         raise HTTPException(status_code=404, detail='Post not found')
@@ -61,7 +61,7 @@ async def create_post(post: Post, session: SessionDep) -> Post:
 
 @router.patch("/{post_uuid}")
 async def update_post(post_uuid: uuid.UUID, updated_post: Post, session: SessionDep) -> Post:
-    post = session.get(Post, post_uuid)
+    post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if post is None:
         raise HTTPException(status_code=404, detail='Post not found')
