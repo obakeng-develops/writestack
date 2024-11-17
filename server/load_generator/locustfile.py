@@ -10,6 +10,9 @@ with open("user_payloads.json", "r") as f:
 with open("posts_payloads.json", "r") as f:
     post_payloads = json.load(f)
     
+with open("newsletter_payloads.json", "r") as f:
+    newsletter_payloads = json.load(f)
+    
 def get_client_response(resp: ResponseContextManager):
     if resp.status_code == 200:
         resp.success()
@@ -52,4 +55,23 @@ class Post(HttpUser):
     @task
     def get_all_comments_for_post(self):
         with self.client.get("/posts/comments/{post_uuid}", json=self.payload, catch_response=True) as response:
+            get_client_response(response)
+
+class Newsletter(HttpUser):
+    wait_time = between(1, 5)
+    payload = random.choice(newsletter_payloads)
+    
+    @task
+    def create_newsletter(self):
+        with self.client.post("/newsletters", json=self.payload, catch_response=True) as response:
+            get_client_response(response)
+    
+    @task 
+    def get_newsletter(self):
+        with self.client.get("/newsletters/{newsletter_uuid}", json=self.payload, catch_response=True) as response:
+            get_client_response(response)
+            
+    @task
+    def get_posts_by_newsletter(self):
+        with self.client.get("/newsletters/posts/{newsletter_uuid}", json=self.payload, catch_response=True) as response:
             get_client_response(response)
