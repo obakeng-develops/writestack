@@ -21,7 +21,7 @@ router = APIRouter(
 SessionDep = Annotated[Session, Depends(get_session)]
 
 @router.get("/{post_id}")
-async def get_post(post_id: int, session: SessionDep) -> Post:
+async def get_post(post_id: uuid.UUID, session: SessionDep) -> Post:
     post = session.get(Post, post_id)
 
     if post is None:
@@ -30,7 +30,7 @@ async def get_post(post_id: int, session: SessionDep) -> Post:
     return post
 
 @router.delete("/{post_id}")
-async def delete_post(post_id: int, session: SessionDep):
+async def delete_post(post_id: uuid.UUID, session: SessionDep):
     post = session.get(Post, post_id)
 
     if post is None:
@@ -60,7 +60,7 @@ async def create_post(post: Post, session: SessionDep) -> Post:
     return post
 
 @router.patch("/{post_id}")
-async def update_post(post_id: int, updated_post: Post, session: SessionDep) -> Post:
+async def update_post(post_id: uuid.UUID, updated_post: Post, session: SessionDep) -> Post:
     post = session.get(Post, post_id)
 
     if post is None:

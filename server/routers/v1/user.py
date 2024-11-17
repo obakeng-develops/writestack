@@ -26,7 +26,7 @@ async def create_user(user: User, session: SessionDep) -> User:
     return user
 
 @router.get("/{user_id}")
-async def get_user(user_id: int, session: SessionDep) -> User:
+async def get_user(user_id: uuid.UUID, session: SessionDep) -> User:
     user = session.get(User, user_id)
 
     if user is None:
@@ -35,7 +35,7 @@ async def get_user(user_id: int, session: SessionDep) -> User:
     return user
 
 @router.patch("/{user_id}")
-async def update_user(user_id: int, updated_user: User, session: SessionDep) -> User:
+async def update_user(user_id: uuid.UUID, updated_user: User, session: SessionDep) -> User:
     user = session.get(user, user_id)
 
     if user is None:
