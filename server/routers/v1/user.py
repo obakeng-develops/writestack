@@ -27,7 +27,7 @@ async def create_user(user: User, session: SessionDep) -> User:
 
 @router.get("/{user_uuid}")
 async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
-    user = session.get(User, user_uuid)
+    user = session.exec(select(User).where(User.id == user_uuid)).first()
 
     if user is None:
         raise HTTPException(status_code=404, detail='User not found')
@@ -36,7 +36,7 @@ async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
 
 @router.patch("/{user_uuid}")
 async def update_user(user_uuid: uuid.UUID, updated_user: User, session: SessionDep) -> User:
-    user = session.get(user, user_uuid)
+    user = session.exec(select(User).where(User.id == user_uuid)).first()
 
     if user is None:
         raise HTTPException(status_code=404, detail='User not found')
