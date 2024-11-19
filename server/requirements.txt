@@ -57,7 +57,7 @@ python-dotenv==0.21.0
 python-jose==3.3.0
 PyYAML==6.0
 pyzmq==26.2.0
-requests==2.32.3
+requests==2.25.1
 rich==12.6.0
 rsa==4.9
 s3transfer==0.6.0
