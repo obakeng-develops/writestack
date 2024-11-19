@@ -36,7 +36,7 @@ jmespath==1.0.1
 localstack==1.2.0
 localstack-client==1.39
 localstack-ext==1.2.0
-locust==2.32.3
+locust==2.31.8
 MarkupSafe==3.0.2
 msgpack==1.1.0
 packaging==21.3
