@@ -11,9 +11,6 @@ with open("user_payloads.json", "r") as f:
 with open("posts_payloads.json", "r") as f:
     post_payloads = json.load(f)
     
-with open("newsletter_payloads.json", "r") as f:
-    newsletter_payloads = json.load(f)
-    
 def get_client_response(resp: ResponseContextManager):
     if resp.status_code == 200:
         resp.success()
