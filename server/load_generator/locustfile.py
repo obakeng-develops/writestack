@@ -22,9 +22,9 @@ class User(HttpUser):
         if response.status_code == 200:
             user_id = response.json().get("id")
             self.user_ids.append(user_id)
-            print(user_id)
+            response.success()
         else:
-            print(f"Failed with status code: {response.status_code}")
+            response.failure()
 
     @task
     def get_users(self):
@@ -33,8 +33,8 @@ class User(HttpUser):
                 response = self.client.get(f"/users/{user_uuid}")
                 
                 if response.status_code == 200:
-                    print(f"Details: {response.json()}")
+                    response.success()
                 else:
-                    print("Failed")
+                    response.failure()
         else:
             print("No user ID available")
