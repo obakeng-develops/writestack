@@ -21,7 +21,7 @@ def get_client_response(resp: ResponseContextManager):
         resp.failure(f"Failed with status code: {resp.status_code}")
 
 class WebAPIBehaviour(HttpUser):
-    wait_time = between(1, 3)
+    wait_time = between(3, 6)
     def on_start(self):
         self.user_ids = []
         self.newsletter_ids = []
