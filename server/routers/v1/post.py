@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from helpers.database import get_session
-from models.post import Post
+from models.post import Post, PostPublic, PostCreate, PostUpdate
 from models.comment import Comment
 from datetime import datetime
 from typing import Annotated
@@ -20,7 +20,7 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.get("/{post_uuid}")
+@router.get("/{post_uuid}", response_model=PostPublic)
 async def get_post(post_uuid: uuid.UUID, session: SessionDep) -> Post:
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
@@ -29,7 +29,7 @@ async def get_post(post_uuid: uuid.UUID, session: SessionDep) -> Post:
     
     return post
 
-@router.delete("/{post_uuid}")
+@router.delete("/{post_uuid}", response_model=PostPublic)
 async def delete_post(post_uuid: uuid.UUID, session: SessionDep):
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
@@ -52,24 +52,24 @@ async def get_all_comments_for_post(post_uuid: uuid.UUID, session: SessionDep) -
     
     return comments
 
-@router.post("/")
-async def create_post(post: Post, session: SessionDep) -> Post:
-    session.add(post)
+@router.post("/", response_model=PostPublic)
+async def create_post(post: PostCreate, session: SessionDep) -> Post:
+    create_post = Post.model_validate(post)
+    session.add(create_post)
     session.commit()
-    session.refresh(post)
-    return post
+    session.refresh(create_post)
+    return create_post
 
-@router.patch("/{post_uuid}")
-async def update_post(post_uuid: uuid.UUID, updated_post: Post, session: SessionDep) -> Post:
+@router.patch("/{post_uuid}", response_model=PostPublic)
+async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, session: SessionDep) -> Post:
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if not post:
         raise HTTPException(status_code=404, detail='Post not found')
     
-    post.subtitle = updated_post.subtitle
-    post.published = updated_post.published
-    post.body = updated_post.body
-
+    post_data = updated_post.model_dump(exclude_unset=True)
+    post.sqlmodel_update(post_data)
+    session.add(post)
     session.commit()
-    session.refresh()
+    session.refresh(post)
     return post
