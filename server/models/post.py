@@ -3,11 +3,25 @@ import uuid
 from datetime import datetime
 from helpers.generate_uuid import generate_uuid
 
-class Post(SQLModel, table=True):
-    id: uuid.UUID = Field(default_factory=generate_uuid, primary_key=True, unique=True)
+class PostBase(SQLModel):
     subtitle: str = Field(default=None, max_length=80)
     published: bool = Field(default=False)
     newsletter: uuid.UUID = Field(foreign_key='newsletter.id')
     body: str
+
+class Post(PostBase, table=True):
+    id: uuid.UUID = Field(default_factory=generate_uuid, primary_key=True, unique=True)
     created_at: datetime = Field(default=datetime.now())
     updated_at: datetime = Field(default=None)
+
+class PostCreate(PostBase):
+    pass
+
+class PostPublic(PostBase):
+    id: uuid.UUID
+    
+class PostUpdate(SQLModel):
+    subtitle: str
+    published: bool
+    newsletter: uuid.UUID
+    body: str
