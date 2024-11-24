@@ -2,9 +2,8 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from helpers.database import get_session
-from models.newsletter import Newsletter
+from models.newsletter import Newsletter, NewsletterCreate, NewsletterPublic, NewsletterUpdate
 from models.post import Post
-from datetime import datetime
 import uuid
 
 router = APIRouter(
@@ -19,7 +18,7 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.get("/{newsletter_uuid}")
+@router.get("/{newsletter_uuid}", response_model=NewsletterPublic)
 async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> Newsletter:
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
@@ -28,7 +27,7 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> New
     
     return newsletter
 
-@router.get("/posts/{newsletter_uuid}")
+@router.get("/posts/{newsletter_uuid}", response_model=NewsletterPublic)
 async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> List[Post]:
     posts = session.exec(select(Post).where(Post.newsletter == newsletter_uuid)).all()
 
@@ -37,23 +36,24 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDe
 
     return posts
 
-@router.patch("/{newsletter_uuid}")
-async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: Newsletter, session: SessionDep) -> Newsletter:
+@router.patch("/{newsletter_uuid}", response_model=NewsletterPublic)
+async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: NewsletterUpdate, session: SessionDep) -> Newsletter:
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
     if not newsletter:
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
-    newsletter.name = updated_newsletter.name 
-    newsletter.updated_at = datetime.now()
-
-    session.commit()
-    session.refresh()
-    return newsletter
-
-@router.post("/{newsletter_uuid}")
-async def create_newsletter(newsletter: Newsletter, session: SessionDep) -> Newsletter:
+    newsletter_data = updated_newsletter.model_dump(exclude_unset=True)
+    newsletter.sqlmodel_update(newsletter_data)
     session.add(newsletter)
     session.commit()
     session.refresh(newsletter)
     return newsletter
+
+@router.post("/{newsletter_uuid}", response_model=NewsletterPublic)
+async def create_newsletter(newsletter: NewsletterCreate, session: SessionDep) -> Newsletter:
+    create_newsletter = Newsletter.model_validate(newsletter)
+    session.add(create_newsletter)
+    session.commit()
+    session.refresh(create_newsletter)
+    return create_newsletter

@@ -1,7 +1,7 @@
 from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
-from models.user import User
+from models.user import User, UserCreate, UserPublic, UserUpdate
 from models.newsletter import Newsletter
 from helpers.database import get_session
 import uuid
@@ -18,14 +18,15 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.post("/")
-async def create_user(user: User, session: SessionDep) -> User:
-    session.add(user)
+@router.post("/", response_model=UserPublic)
+async def create_user(user: UserCreate, session: SessionDep) -> User:
+    create_user = User.model_validate(user)
+    session.add(create_user)
     session.commit()
-    session.refresh(user)
-    return user
+    session.refresh(create_user)
+    return create_user
 
-@router.get("/{user_uuid}")
+@router.get("/{user_uuid}", response_model=UserPublic)
 async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
@@ -34,19 +35,18 @@ async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
     
     return user
 
-@router.patch("/{user_uuid}")
-async def update_user(user_uuid: uuid.UUID, updated_user: User, session: SessionDep) -> User:
+@router.patch("/{user_uuid}", response_model=UserPublic)
+async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, session: SessionDep) -> User:
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
     
-    user.first_name = updated_user.first_name
-    user.last_name = updated_user.last_name
-    user.email = updated_user.email
-
+    user_data = updated_user.model_dump(exclude_unset=True)
+    user.sqlmodel_update(user_data)
+    session.add(user)
     session.commit()
-    session.refresh()
+    session.refresh(user)
     return user
 
 @router.get("/newsletters/{user_uuid}")
