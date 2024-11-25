@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Field
 import uuid
 from helpers.generate_uuid import generate_uuid
-import datetime
+from datetime import datetime
 
 class CommentBase(SQLModel):
     body: str
