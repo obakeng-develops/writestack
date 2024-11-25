@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from helpers.database import get_session
 from models.subscription import Subscription, SubscriptionPublic
@@ -24,4 +24,4 @@ async def get_all_subscriptions_for_newsletter(newsletter_uuid: uuid.UUID, sessi
     if not subscriptions:
         raise HTTPException(status_code=404, detail='No subscriptions found for the given newsletter')
 
-    return subscriptions
+    return subscriptions, status.HTTP_200_OK

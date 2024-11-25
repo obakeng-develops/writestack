@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from helpers.database import get_session
 from models.newsletter import Newsletter, NewsletterCreate, NewsletterPublic, NewsletterUpdate
@@ -25,7 +25,7 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> New
     if not newsletter:
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
-    return newsletter
+    return newsletter, status.HTTP_200_OK
 
 @router.get("/posts/{newsletter_uuid}", response_model=NewsletterPublic)
 async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> List[Post]:
@@ -34,7 +34,7 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDe
     if not posts:
         raise HTTPException(status_code=404, details='There are no posts')
 
-    return posts
+    return posts, status.HTTP_200_OK
 
 @router.patch("/{newsletter_uuid}", response_model=NewsletterPublic)
 async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: NewsletterUpdate, session: SessionDep) -> Newsletter:
@@ -48,7 +48,7 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     session.add(newsletter)
     session.commit()
     session.refresh(newsletter)
-    return newsletter
+    return newsletter, status.HTTP_200_OK
 
 @router.post("/{newsletter_uuid}", response_model=NewsletterPublic)
 async def create_newsletter(newsletter: NewsletterCreate, session: SessionDep) -> Newsletter:
@@ -56,4 +56,4 @@ async def create_newsletter(newsletter: NewsletterCreate, session: SessionDep) -
     session.add(create_newsletter)
     session.commit()
     session.refresh(create_newsletter)
-    return create_newsletter
+    return create_newsletter, status.HTTP_201_CREATED

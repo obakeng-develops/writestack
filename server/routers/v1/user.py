@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from models.user import User, UserCreate, UserPublic, UserUpdate
 from models.newsletter import Newsletter
@@ -24,7 +24,7 @@ async def create_user(user: UserCreate, session: SessionDep) -> User:
     session.add(create_user)
     session.commit()
     session.refresh(create_user)
-    return create_user
+    return create_user, status.HTTP_201_CREATED
 
 @router.get("/{user_uuid}", response_model=UserPublic)
 async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
@@ -33,7 +33,7 @@ async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
     
-    return user
+    return user, status.HTTP_200_OK
 
 @router.patch("/{user_uuid}", response_model=UserPublic)
 async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, session: SessionDep) -> User:
@@ -47,7 +47,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, session: S
     session.add(user)
     session.commit()
     session.refresh(user)
-    return user
+    return user, status.HTTP_200_OK
 
 @router.get("/newsletters/{user_uuid}")
 async def get_newsletters_for_users(user_uuid: uuid.UUID, session: SessionDep) -> List[Newsletter]:
@@ -56,4 +56,4 @@ async def get_newsletters_for_users(user_uuid: uuid.UUID, session: SessionDep) -
     if not newsletters:
         raise HTTPException(status_code=404, detail='No newsletters found')
 
-    return newsletters
+    return newsletters, status.HTTP_200_OK

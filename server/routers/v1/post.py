@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from helpers.database import get_session
 from models.post import Post, PostPublic, PostCreate, PostUpdate
@@ -27,7 +27,7 @@ async def get_post(post_uuid: uuid.UUID, session: SessionDep) -> Post:
     if not post:
         raise HTTPException(status_code=404, detail='Post not found')
     
-    return post
+    return post, status.HTTP_200_OK
 
 @router.delete("/{post_uuid}", response_model=PostPublic)
 async def delete_post(post_uuid: uuid.UUID, session: SessionDep):
@@ -41,7 +41,7 @@ async def delete_post(post_uuid: uuid.UUID, session: SessionDep):
 
     return {
         "message": "Post deleted successfully."
-    }
+    }, status.HTTP_200_OK
 
 @router.get("/comments/{post_uuid}")
 async def get_all_comments_for_post(post_uuid: uuid.UUID, session: SessionDep) -> List[Comment]:
@@ -50,7 +50,7 @@ async def get_all_comments_for_post(post_uuid: uuid.UUID, session: SessionDep) -
     if not comments:
         raise HTTPException(status_code=404, detail='Comments not found')
     
-    return comments
+    return comments, status.HTTP_200_OK
 
 @router.post("/", response_model=PostPublic)
 async def create_post(post: PostCreate, session: SessionDep) -> Post:
@@ -58,7 +58,7 @@ async def create_post(post: PostCreate, session: SessionDep) -> Post:
     session.add(create_post)
     session.commit()
     session.refresh(create_post)
-    return create_post
+    return create_post, status.HTTP_201_CREATED
 
 @router.patch("/{post_uuid}", response_model=PostPublic)
 async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, session: SessionDep) -> Post:
@@ -72,4 +72,4 @@ async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, session: S
     session.add(post)
     session.commit()
     session.refresh(post)
-    return post
+    return post, status.HTTP_200_OK
