@@ -26,8 +26,8 @@ async def get_comment(comment_uuid: uuid.UUID, session: SessionDep) -> Comment:
     
     return comment
 
-@router.post("/", response_model=CommentPublic)
-async def create_comment(comment: CommentCreate, session: Session) -> Comment:
+@router.post("/{comment_uuid}", response_model=CommentPublic)
+async def create_comment(comment: CommentCreate, session: SessionDep) -> Comment:
     create_comment = Comment.model_validate(comment)
     session.add(create_comment)
     session.commit()

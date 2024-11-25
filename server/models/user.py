@@ -1,7 +1,6 @@
 from sqlmodel import Field, SQLModel
 import uuid
 from datetime import datetime
-from helpers.generate_uuid import generate_uuid
 
 class UserBase(SQLModel):
     first_name: str = Field(max_length=50)

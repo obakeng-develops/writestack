@@ -2,7 +2,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from models.user import User, UserCreate, UserPublic, UserUpdate
-from models.newsletter import Newsletter
+from models.newsletter import Newsletter, NewsletterPublic
 from helpers.database import get_session
 import uuid
 
@@ -49,7 +49,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, session: S
     session.refresh(user)
     return user
 
-@router.get("/newsletters/{user_uuid}")
+@router.get("/newsletters/{user_uuid}", response_model=NewsletterPublic)
 async def get_newsletters_for_users(user_uuid: uuid.UUID, session: SessionDep) -> List[Newsletter]:
     newsletters = session.exec(select(Newsletter).where(Newsletter.user == user_uuid)).all()
 
