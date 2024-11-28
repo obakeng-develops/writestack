@@ -17,7 +17,7 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.get("/newsletter/{newsletter_uuid}", response_model=SubscriptionPublic, status_code=status.HTTP_200_OK)
+@router.get("/newsletter/{newsletter_uuid}", response_model=List[SubscriptionPublic], status_code=status.HTTP_200_OK)
 async def get_all_subscriptions_for_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> List[Subscription]:
     subscriptions = session.exec(select(Subscription).where(Subscription.newsletter == newsletter_uuid).limit(10)).all()
 

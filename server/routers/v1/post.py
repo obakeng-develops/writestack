@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from helpers.database import get_session
 from models.post import Post, PostPublic, PostCreate, PostUpdate
-from models.comment import Comment
+from models.comment import Comment, CommentPublic
 from datetime import datetime
 from typing import Annotated
 import uuid
@@ -43,7 +43,7 @@ async def delete_post(post_uuid: uuid.UUID, session: SessionDep):
         "message": "Post deleted successfully."
     }
 
-@router.get("/comments/{post_uuid}", status_code=status.HTTP_200_OK)
+@router.get("/comments/{post_uuid}", response_model=List[CommentPublic], status_code=status.HTTP_200_OK)
 async def get_all_comments_for_post(post_uuid: uuid.UUID, session: SessionDep) -> List[Comment]:
     comments = session.exec(select(Comment).where(Comment.post == post_uuid)).all()
 

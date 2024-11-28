@@ -49,7 +49,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, session: S
     session.refresh(user)
     return user
 
-@router.get("/newsletters/{user_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
+@router.get("/newsletters/{user_uuid}", response_model=List[NewsletterPublic], status_code=status.HTTP_200_OK)
 async def get_newsletters_for_users(user_uuid: uuid.UUID, session: SessionDep) -> List[Newsletter]:
     newsletters = session.exec(select(Newsletter).where(Newsletter.user == user_uuid)).all()
 
