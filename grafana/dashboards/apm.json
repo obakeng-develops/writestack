@@ -63,7 +63,6 @@
       },
       {
         "datasource": {
-          "type": "prometheus",
           "uid": "fe5ar9pz356o0d"
         },
         "fieldConfig": {
@@ -90,7 +89,7 @@
               "insertNulls": false,
               "lineInterpolation": "linear",
               "lineWidth": 1,
-              "pointSize": 5,
+              "pointSize": 1,
               "scaleDistribution": {
                 "type": "linear"
               },
@@ -120,32 +119,7 @@
             },
             "unit": "ms"
           },
-          "overrides": [
-            {
-              "__systemRef": "hideSeriesFrom",
-              "matcher": {
-                "id": "byNames",
-                "options": {
-                  "mode": "exclude",
-                  "names": [
-                    "/posts/{post_uuid}"
-                  ],
-                  "prefix": "All except:",
-                  "readOnly": true
-                }
-              },
-              "properties": [
-                {
-                  "id": "custom.hideFrom",
-                  "value": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": true
-                  }
-                }
-              ]
-            }
-          ]
+          "overrides": []
         },
         "gridPos": {
           "h": 8,
@@ -156,8 +130,11 @@
         "id": 3,
         "options": {
           "legend": {
-            "calcs": [],
-            "displayMode": "list",
+            "calcs": [
+              "max",
+              "mean"
+            ],
+            "displayMode": "table",
             "placement": "bottom",
             "showLegend": true
           },
@@ -170,7 +147,7 @@
         "targets": [
           {
             "editorMode": "code",
-            "expr": "sum(histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))) by (handler)",
+            "expr": "sum(histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))) by (handler)",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -305,7 +282,7 @@
               "insertNulls": false,
               "lineInterpolation": "linear",
               "lineWidth": 1,
-              "pointSize": 5,
+              "pointSize": 1,
               "scaleDistribution": {
                 "type": "linear"
               },
@@ -540,8 +517,11 @@
               },
               "insertNulls": false,
               "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 2,
+              "pointSize": 1,
               "scaleDistribution": {
                 "type": "linear"
               },
@@ -571,7 +551,32 @@
             },
             "unit": "percent"
           },
-          "overrides": []
+          "overrides": [
+            {
+              "__systemRef": "hideSeriesFrom",
+              "matcher": {
+                "id": "byNames",
+                "options": {
+                  "mode": "exclude",
+                  "names": [
+                    "/posts/{post_uuid}"
+                  ],
+                  "prefix": "All except:",
+                  "readOnly": true
+                }
+              },
+              "properties": [
+                {
+                  "id": "custom.hideFrom",
+                  "value": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": true
+                  }
+                }
+              ]
+            }
+          ]
         },
         "gridPos": {
           "h": 8,
@@ -685,13 +690,13 @@
       ]
     },
     "time": {
-      "from": "now-5m",
+      "from": "now-15m",
       "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "Application Performance",
     "uid": "fe5asbcwidc00f",
-    "version": 3,
+    "version": 5,
     "weekStart": ""
   }
