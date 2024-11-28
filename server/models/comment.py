@@ -11,7 +11,7 @@ class CommentBase(SQLModel):
 class Comment(CommentBase, table=True):
     id: uuid.UUID = Field(default_factory=generate_uuid, primary_key=True, unique=True)
     created_at: datetime = Field(default=datetime.now())
-    updated_at: datetime = Field(default=None)
+    updated_at: datetime = Field(default=datetime.now())
 
 class CommentCreate(CommentBase):
     pass
