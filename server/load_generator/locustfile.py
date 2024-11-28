@@ -28,15 +28,17 @@ class WebAPIBehaviour(HttpUser):
     
     
     def on_start(self):
+        # Creating a user
         payload = random.choice(user_payloads)
         with self.client.post("/users", json=payload, catch_response=True) as response:
-            if response.status_code == 200:
+            if response.status_code == 201:
                 user_id = response.json().get("id")
                 self.user_ids.append(user_id)
                 response.success()
             else:
                 response.failure(f"Failed to create a user: {response.text}")
                 
+        # Creating a newsletter
         if self.user_ids:
             user_uuid = random.choice(self.user_ids)
             newsletter_payload = random.choice(newsletter_payloads)
@@ -46,17 +48,17 @@ class WebAPIBehaviour(HttpUser):
                 "user": user_uuid
             }
             
-            response = self.client.post("/newsletters", json=augmented_payload, catch_response=True)
-            
-            if response.status_code == 200:
-                newsletter_id = response.json().get("id")
-                self.newsletter_ids.append(newsletter_id)
-                response.success()
-            else:
-                response.failure(f"Failed to create a newsletter: {response.text}")
+            with self.client.post("/newsletters", json=augmented_payload, catch_response=True) as response:
+                if response.status_code == 201:
+                    newsletter_id = response.json().get("id")
+                    self.newsletter_ids.append(newsletter_id)
+                    response.success()
+                else:
+                    response.failure(f"Failed to create a newsletter: {response.text}")
         else:
             print("No user ID available to create a newsletter")
             
+        # Creating a post
         if self.newsletter_ids:
             for newsletter_uuid in self.newsletter_ids:
                 post_payload = random.choice(post_payloads)
@@ -66,14 +68,13 @@ class WebAPIBehaviour(HttpUser):
                     "newsletter": newsletter_uuid
                 }
                 
-                response = self.client.post("/posts", json=augmented_payload, catch_response=True)
-                
-                if response.status_code == 200:
-                    post_id = response.json().get("id")
-                    self.post_ids.append(post_id)
-                    response.success()
-                else:
-                    response.failure()       
+                with self.client.post("/posts", json=augmented_payload, catch_response=True) as response:
+                    if response.status_code == 201:
+                        post_id = response.json().get("id")
+                        self.post_ids.append(post_id)
+                        response.success()
+                    else:
+                        response.failure()       
         else:
             print("No newsletter IDs available")
 
@@ -81,12 +82,11 @@ class WebAPIBehaviour(HttpUser):
     def get_users(self):
         if self.user_ids:
             for user_uuid in self.user_ids:
-                response = self.client.get(f"/users/{user_uuid}", catch_response=True)
-                
-                if response.status_code == 200:
-                    response.success()
-                else:
-                    response.failure()
+                with self.client.get(f"/users/{user_uuid}", catch_response=True) as response:
+                    if response.status_code == 200:
+                        response.success()
+                    else:
+                        response.failure()
         else:
             print("No user ID available")
             
@@ -94,12 +94,11 @@ class WebAPIBehaviour(HttpUser):
     def get_newsletter(self):
         if self.newsletter_ids:
             for newsletter_uuid in self.newsletter_ids:
-                response = self.client.get(f"/newsletter/{newsletter_uuid}", catch_response=True)
-                
-                if response.status_code == 200:
-                    response.success()
-                else:
-                    response.failure("Failed to fetch a newsletter")
+                with self.client.get(f"/newsletter/{newsletter_uuid}", catch_response=True) as response:
+                    if response.status_code == 200:
+                        response.success()
+                    else:
+                        response.failure("Failed to fetch a newsletter")
         else:
             print("No newsletter IDs available")
 
@@ -115,12 +114,11 @@ class WebAPIBehaviour(HttpUser):
                     "user": user_uuid
                 }
                 
-                response = self.client.patch(f"/newsletter/{newsletter_uuid}", json=augmented_payload, catch_response=True)
-                
-                if response.status_code == 200:
-                    response.success()
-                else:
-                    response.failure()
+                with self.client.patch(f"/newsletter/{newsletter_uuid}", json=augmented_payload, catch_response=True) as response:
+                    if response.status_code == 200:
+                        response.success()
+                    else:
+                        response.failure()
         else:
             print("No newsletter IDs available")
                 
@@ -141,12 +139,11 @@ class WebAPIBehaviour(HttpUser):
     def get_post(self):
         if self.post_ids:
             for post_uuid in self.post_ids:
-                response = self.client.get(f"/posts/{post_uuid}", catch_response=True)
-                
-                if response.status_code == 200:
-                    response.success()
-                else:
-                    response.failure()
+                with self.client.get(f"/posts/{post_uuid}", catch_response=True) as response:
+                    if response.status_code == 200:
+                        response.success()
+                    else:
+                        response.failure()
         else:
             print("No post IDs available")
             
@@ -162,11 +159,10 @@ class WebAPIBehaviour(HttpUser):
                     "newsletter": newsletter_uuid
                 }
                 
-                response = self.client.patch(f"/posts/{post_uuid}", json=augmented_payload, catch_response=True)
-                
-                if response.status_code == 200:
-                    response.success()
-                else:
-                    response.failure()
+                with self.client.patch(f"/posts/{post_uuid}", json=augmented_payload, catch_response=True) as response:
+                    if response.status_code == 200:
+                        response.success()
+                    else:
+                        response.failure()
         else:
             print("No post or newsletter IDs available")
