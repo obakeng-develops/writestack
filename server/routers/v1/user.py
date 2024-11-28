@@ -18,24 +18,24 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.post("/", response_model=UserPublic)
+@router.post("/", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, session: SessionDep) -> User:
-    create_user = User.model_validate(user)
-    session.add(create_user)
+    new_user = User.model_validate(user)
+    session.add(new_user)
     session.commit()
-    session.refresh(create_user)
-    return create_user, status.HTTP_201_CREATED
+    session.refresh(new_user)
+    return new_user
 
-@router.get("/{user_uuid}", response_model=UserPublic)
+@router.get("/{user_uuid}", response_model=UserPublic, status_code=status.HTTP_200_OK)
 async def get_user(user_uuid: uuid.UUID, session: SessionDep) -> User:
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
     
-    return user, status.HTTP_200_OK
+    return user
 
-@router.patch("/{user_uuid}", response_model=UserPublic)
+@router.patch("/{user_uuid}", response_model=UserPublic, status_code=status.HTTP_200_OK)
 async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, session: SessionDep) -> User:
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
@@ -47,13 +47,13 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, session: S
     session.add(user)
     session.commit()
     session.refresh(user)
-    return user, status.HTTP_200_OK
+    return user
 
-@router.get("/newsletters/{user_uuid}", response_model=NewsletterPublic)
+@router.get("/newsletters/{user_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
 async def get_newsletters_for_users(user_uuid: uuid.UUID, session: SessionDep) -> List[Newsletter]:
     newsletters = session.exec(select(Newsletter).where(Newsletter.user == user_uuid)).all()
 
     if not newsletters:
         raise HTTPException(status_code=404, detail='No newsletters found')
 
-    return newsletters, status.HTTP_200_OK
+    return newsletters

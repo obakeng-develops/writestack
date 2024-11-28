@@ -17,24 +17,24 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.get("/{comment_uuid}", response_model=CommentPublic)
+@router.get("/{comment_uuid}", response_model=CommentPublic, status_code=status.HTTP_200_OK)
 async def get_comment(comment_uuid: uuid.UUID, session: SessionDep) -> Comment:
     comment = session.get(Comment, comment_uuid)
     
     if not comment:
         raise HTTPException(status_code=404, detail='Comment not found')
     
-    return comment, status.HTTP_200_OK
+    return comment
 
-@router.post("/{comment_uuid}", response_model=CommentPublic)
+@router.post("/{comment_uuid}", response_model=CommentPublic, status_code=status.HTTP_201_CREATED)
 async def create_comment(comment: CommentCreate, session: SessionDep) -> Comment:
     create_comment = Comment.model_validate(comment)
     session.add(create_comment)
     session.commit()
     session.refresh(create_comment)
-    return create_comment, status.HTTP_201_CREATED
+    return create_comment
 
-@router.patch("/{comment_uuid}", response_model=CommentPublic)
+@router.patch("/{comment_uuid}", response_model=CommentPublic, status_code=status.HTTP_200_OK)
 async def update_comment(comment_uuid: uuid.UUID, updated_comment: CommentUpdate, session: SessionDep) -> Comment:
     comment = session.get(Comment, comment_uuid)
     
@@ -46,9 +46,9 @@ async def update_comment(comment_uuid: uuid.UUID, updated_comment: CommentUpdate
     session.add(comment)
     session.commit()
     session.refresh(comment)
-    return comment, status.HTTP_200_OK
+    return comment
 
-@router.delete("/{comment_uuid}")
+@router.delete("/{comment_uuid}", status_code=status.HTTP_200_OK)
 async def delete_comment(comment_uuid: uuid.UUID, session: SessionDep):
     comment = session.get(Comment, comment_uuid)
     
@@ -61,4 +61,4 @@ async def delete_comment(comment_uuid: uuid.UUID, session: SessionDep):
     
     return {
         "message": "Comment deleted successfully"
-    }, status.HTTP_200_OK
+    }
