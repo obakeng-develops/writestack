@@ -60,21 +60,21 @@ class WebAPIBehaviour(HttpUser):
             
         # Creating a post
         if self.newsletter_ids:
-            for newsletter_uuid in self.newsletter_ids:
-                post_payload = random.choice(post_payloads)
+            newsletter_uuid = random.choice(self.newsletter_ids)
+            post_payload = random.choice(post_payloads)
                 
-                augmented_payload = {
-                    **post_payload,
-                    "newsletter": newsletter_uuid
-                }
+            augmented_payload = {
+                **post_payload,
+                "newsletter": newsletter_uuid
+            }
                 
-                with self.client.post("/posts", json=augmented_payload, catch_response=True) as response:
-                    if response.status_code == 201:
-                        post_id = response.json().get("id")
-                        self.post_ids.append(post_id)
-                        response.success()
-                    else:
-                        response.failure()       
+            with self.client.post("/posts", json=augmented_payload, catch_response=True) as response:
+                if response.status_code == 201:
+                    post_id = response.json().get("id")
+                    self.post_ids.append(post_id)
+                    response.success()
+                else:
+                    response.failure(f"Failed to create a post: {response.text}")       
         else:
             print("No newsletter IDs available")
 
@@ -86,7 +86,7 @@ class WebAPIBehaviour(HttpUser):
                     if response.status_code == 200:
                         response.success()
                     else:
-                        response.failure()
+                        response.failure(f"Failed to get a user: {response.text}")
         else:
             print("No user ID available")
             
@@ -98,7 +98,7 @@ class WebAPIBehaviour(HttpUser):
                     if response.status_code == 200:
                         response.success()
                     else:
-                        response.failure("Failed to fetch a newsletter")
+                        response.failure(f"Failed to fetch a newsletter: {response.text}")
         else:
             print("No newsletter IDs available")
 
@@ -118,7 +118,7 @@ class WebAPIBehaviour(HttpUser):
                     if response.status_code == 200:
                         response.success()
                     else:
-                        response.failure()
+                        response.failure(f"Failed to update a newsletter: {response.text}")
         else:
             print("No newsletter IDs available")
                 
@@ -143,26 +143,26 @@ class WebAPIBehaviour(HttpUser):
                     if response.status_code == 200:
                         response.success()
                     else:
-                        response.failure()
+                        response.failure(f"Faield to get a post: {response.text}")
         else:
             print("No post IDs available")
             
-    @task
-    def update_post(self):
-        if self.post_ids and self.newsletter_ids:
-            for post_uuid in self.post_ids:
-                newsletter_uuid = random.choice(self.newsletter_ids)
-                post_payload = random.choice(self.post_payloads)
+    # @task
+    # def update_post(self):
+    #     if self.post_ids and self.newsletter_ids:
+    #         for post_uuid in self.post_ids:
+    #             newsletter_uuid = random.choice(self.newsletter_ids)
+    #             post_payload = random.choice(post_payloads)
                 
-                augmented_payload = {
-                    **post_payload,
-                    "newsletter": newsletter_uuid
-                }
+    #             augmented_payload = {
+    #                 **post_payload,
+    #                 "newsletter": newsletter_uuid
+    #             }
                 
-                with self.client.patch(f"/posts/{post_uuid}", json=augmented_payload, catch_response=True) as response:
-                    if response.status_code == 200:
-                        response.success()
-                    else:
-                        response.failure()
-        else:
-            print("No post or newsletter IDs available")
+    #             with self.client.patch(f"/posts/{post_uuid}", json=augmented_payload, catch_response=True) as response:
+    #                 if response.status_code == 200:
+    #                     response.success()
+    #                 else:
+    #                     response.failure(f"Failed to update a post: {response.text}")
+    #     else:
+    #         print("No post or newsletter IDs available")

@@ -50,7 +50,7 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     session.refresh(newsletter)
     return newsletter
 
-@router.post("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=NewsletterPublic, status_code=status.HTTP_201_CREATED)
 async def create_newsletter(newsletter: NewsletterCreate, session: SessionDep) -> Newsletter:
     create_newsletter = Newsletter.model_validate(newsletter)
     session.add(create_newsletter)
