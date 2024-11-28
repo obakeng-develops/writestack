@@ -20,16 +20,16 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.get("/{post_uuid}", response_model=PostPublic)
+@router.get("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)
 async def get_post(post_uuid: uuid.UUID, session: SessionDep) -> Post:
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if not post:
         raise HTTPException(status_code=404, detail='Post not found')
     
-    return post, status.HTTP_200_OK
+    return post
 
-@router.delete("/{post_uuid}", response_model=PostPublic)
+@router.delete("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)
 async def delete_post(post_uuid: uuid.UUID, session: SessionDep):
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
@@ -41,26 +41,26 @@ async def delete_post(post_uuid: uuid.UUID, session: SessionDep):
 
     return {
         "message": "Post deleted successfully."
-    }, status.HTTP_200_OK
+    }
 
-@router.get("/comments/{post_uuid}")
+@router.get("/comments/{post_uuid}", status_code=status.HTTP_200_OK)
 async def get_all_comments_for_post(post_uuid: uuid.UUID, session: SessionDep) -> List[Comment]:
     comments = session.exec(select(Comment).where(Comment.post == post_uuid)).all()
 
     if not comments:
         raise HTTPException(status_code=404, detail='Comments not found')
     
-    return comments, status.HTTP_200_OK
+    return comments
 
-@router.post("/", response_model=PostPublic)
+@router.post("/", response_model=PostPublic, status_code=status.HTTP_201_CREATED)
 async def create_post(post: PostCreate, session: SessionDep) -> Post:
     create_post = Post.model_validate(post)
     session.add(create_post)
     session.commit()
     session.refresh(create_post)
-    return create_post, status.HTTP_201_CREATED
+    return create_post
 
-@router.patch("/{post_uuid}", response_model=PostPublic)
+@router.patch("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)
 async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, session: SessionDep) -> Post:
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
@@ -72,4 +72,4 @@ async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, session: S
     session.add(post)
     session.commit()
     session.refresh(post)
-    return post, status.HTTP_200_OK
+    return post

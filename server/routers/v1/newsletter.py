@@ -18,25 +18,25 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.get("/{newsletter_uuid}", response_model=NewsletterPublic)
+@router.get("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
 async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> Newsletter:
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
     if not newsletter:
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
-    return newsletter, status.HTTP_200_OK
+    return newsletter
 
-@router.get("/posts/{newsletter_uuid}", response_model=NewsletterPublic)
+@router.get("/posts/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
 async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> List[Post]:
     posts = session.exec(select(Post).where(Post.newsletter == newsletter_uuid)).all()
 
     if not posts:
         raise HTTPException(status_code=404, details='There are no posts')
 
-    return posts, status.HTTP_200_OK
+    return posts
 
-@router.patch("/{newsletter_uuid}", response_model=NewsletterPublic)
+@router.patch("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
 async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: NewsletterUpdate, session: SessionDep) -> Newsletter:
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
@@ -48,12 +48,12 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     session.add(newsletter)
     session.commit()
     session.refresh(newsletter)
-    return newsletter, status.HTTP_200_OK
+    return newsletter
 
-@router.post("/{newsletter_uuid}", response_model=NewsletterPublic)
+@router.post("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_201_CREATED)
 async def create_newsletter(newsletter: NewsletterCreate, session: SessionDep) -> Newsletter:
     create_newsletter = Newsletter.model_validate(newsletter)
     session.add(create_newsletter)
     session.commit()
     session.refresh(create_newsletter)
-    return create_newsletter, status.HTTP_201_CREATED
+    return create_newsletter
