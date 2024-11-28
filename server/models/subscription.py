@@ -10,7 +10,7 @@ class SubscriptionBase(SQLModel):
 class Subscription(SubscriptionBase, table=True):
     id: uuid.UUID = Field(default_factory=generate_uuid, primary_key=True, unique=True)
     created_at: datetime = Field(default=datetime.now())
-    updated_at: datetime = Field(default=None) 
+    updated_at: datetime = Field(default=datetime.now()) 
 
 class SubscriptionCreate(SubscriptionBase):
     pass

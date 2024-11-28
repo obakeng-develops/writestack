@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from helpers.database import get_session
 from models.newsletter import Newsletter, NewsletterCreate, NewsletterPublic, NewsletterUpdate
-from models.post import Post
+from models.post import Post, PostPublic
 import uuid
 
 router = APIRouter(
@@ -27,7 +27,7 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> New
     
     return newsletter
 
-@router.get("/posts/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
+@router.get("/posts/{newsletter_uuid}", response_model=List[PostPublic], status_code=status.HTTP_200_OK)
 async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, session: SessionDep) -> List[Post]:
     posts = session.exec(select(Post).where(Post.newsletter == newsletter_uuid)).all()
 
@@ -50,7 +50,7 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     session.refresh(newsletter)
     return newsletter
 
-@router.post("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=NewsletterPublic, status_code=status.HTTP_201_CREATED)
 async def create_newsletter(newsletter: NewsletterCreate, session: SessionDep) -> Newsletter:
     create_newsletter = Newsletter.model_validate(newsletter)
     session.add(create_newsletter)
