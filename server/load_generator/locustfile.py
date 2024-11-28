@@ -126,12 +126,11 @@ class WebAPIBehaviour(HttpUser):
     def get_newsletters_for_user(self):
         if self.newsletter_ids and self.user_ids:
             for user_uuid in self.user_ids:
-                response = self.client.get(f"/users/newsletters/{user_uuid}", catch_response=True)
-                
-                if response.status_code == 200:
-                    response.success()
-                else:
-                    response.failure(f"Failed to fetch user's newsletters: {response.text}")
+                with self.client.get(f"/users/newsletters/{user_uuid}", catch_response=True) as response:
+                    if response.status_code == 200:
+                        response.success()
+                    else:
+                        response.failure(f"Failed to fetch user's newsletters: {response.text}")
         else:
             print("No newsletter or user IDs available")
             
