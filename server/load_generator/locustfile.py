@@ -5,13 +5,13 @@ from locust.clients import ResponseContextManager
 import json
     
 
-with open("user_payloads.json", "r") as f:
+with open("data/user_payloads.json", "r") as f:
     user_payloads = json.load(f)
     
-with open("posts_payloads.json", "r") as f:
+with open("data/posts_payloads.json", "r") as f:
     post_payloads = json.load(f)
     
-with open("newsletter_payloads.json", "r") as f:
+with open("data/newsletter_payloads.json", "r") as f:
     newsletter_payloads = json.load(f)
     
 def get_client_response(resp: ResponseContextManager):
@@ -59,7 +59,7 @@ class WebAPIBehaviour(HttpUser):
             print("No user ID available to create a newsletter")
             
         # Creating a post
-        if self.newsletter_ids:
+        if self.newsletter_ids and self.user_ids:
             newsletter_uuid = random.choice(self.newsletter_ids)
             post_payload = random.choice(post_payloads)
                 
