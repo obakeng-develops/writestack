@@ -13,3 +13,18 @@ services:
     image: grafana/grafana
     ports:
       - "3000:3000"
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    ports:
+      - "8123:8123"  # HTTP interface
+      - "9000:9000"  # Native interface
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+  vector:
+    image: timberio/vector:latest-alpine
+    ports:
+      - "8383:8383"  # Healthcheck endpoint
+    volumes:
+      - ./vector.yaml:/etc/vector/vector.yaml
+volumes:
+  clickhouse_data:
