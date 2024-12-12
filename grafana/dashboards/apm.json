@@ -27,7 +27,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 4,
         "w": 24,
         "x": 0,
         "y": 0
@@ -52,7 +52,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 4
       },
       "id": 2,
       "panels": [],
@@ -124,7 +124,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 7
+        "y": 5
       },
       "id": 3,
       "options": {
@@ -243,7 +243,7 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "reqps"
         },
         "overrides": []
       },
@@ -251,7 +251,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 7
+        "y": 5
       },
       "id": 4,
       "options": {
@@ -343,7 +343,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -351,7 +352,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 15
+        "y": 13
       },
       "id": 5,
       "options": {
@@ -399,6 +400,6 @@
   "timezone": "browser",
   "title": "Application Performance",
   "uid": "be6pt56nqlwxse",
-  "version": 5,
+  "version": 6,
   "weekStart": ""
 }
