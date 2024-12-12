@@ -1,0 +1,13 @@
+sources:
+  fastapi:
+    type: http_server
+    address: 127.0.0.1:8000
+
+sinks:
+  file:
+    inputs:
+      - fastapi
+    type: file
+    path: ./vector.log
+    encoding:
+      codec: json
