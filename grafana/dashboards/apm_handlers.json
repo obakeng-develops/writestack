@@ -54,14 +54,40 @@
         "fieldConfig": {
           "defaults": {
             "color": {
-              "mode": "thresholds"
+              "mode": "palette-classic"
             },
             "custom": {
-              "align": "auto",
-              "cellOptions": {
-                "type": "auto"
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
               },
-              "inspect": false
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
             },
             "mappings": [],
             "thresholds": {
@@ -82,24 +108,23 @@
           "overrides": []
         },
         "gridPos": {
-          "h": 8,
+          "h": 11,
           "w": 24,
           "x": 0,
           "y": 3
         },
         "id": 1,
         "options": {
-          "cellHeight": "sm",
-          "footer": {
-            "countRows": false,
-            "enablePagination": true,
-            "fields": "",
-            "reducer": [
-              "sum"
-            ],
-            "show": false
+          "legend": {
+            "calcs": [],
+            "displayMode": "table",
+            "placement": "bottom",
+            "showLegend": true
           },
-          "showHeader": true
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
         },
         "pluginVersion": "11.4.0",
         "targets": [
@@ -117,7 +142,7 @@
           }
         ],
         "title": "Top 10 Slowest Handlers",
-        "type": "table"
+        "type": "timeseries"
       },
       {
         "collapsed": false,
@@ -125,7 +150,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 11
+          "y": 14
         },
         "id": 4,
         "panels": [],
@@ -197,7 +222,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 12
+          "y": 15
         },
         "id": 3,
         "options": {
@@ -295,7 +320,7 @@
           "h": 8,
           "w": 12,
           "x": 12,
-          "y": 12
+          "y": 15
         },
         "id": 6,
         "options": {
@@ -406,7 +431,7 @@
           "h": 8,
           "w": 24,
           "x": 0,
-          "y": 20
+          "y": 23
         },
         "id": 5,
         "options": {
@@ -447,8 +472,8 @@
       "list": [
         {
           "current": {
-            "text": "/metrics",
-            "value": "/metrics"
+            "text": "/posts/",
+            "value": "/posts/"
           },
           "datasource": {
             "type": "prometheus",
@@ -470,13 +495,13 @@
       ]
     },
     "time": {
-      "from": "now-6h",
+      "from": "now-5m",
       "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "Application Performance / Handlers",
     "uid": "de79v81mopt6oa",
-    "version": 4,
+    "version": 5,
     "weekStart": ""
   }
