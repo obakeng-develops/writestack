@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Index
 import uuid
 from datetime import datetime
 from helpers.generate_uuid import generate_uuid
@@ -13,6 +13,10 @@ class Post(PostBase, table=True):
     id: uuid.UUID = Field(default_factory=generate_uuid, primary_key=True, unique=True)
     created_at: datetime = Field(default=datetime.now())
     updated_at: datetime = Field(default=datetime.now())
+    
+    __table_args__ = (
+        Index('ix_newsletter_id', 'newsletter')
+    )
 
 class PostCreate(PostBase):
     pass

@@ -1,4 +1,4 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Index
 import uuid
 from datetime import datetime
 
@@ -11,6 +11,10 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, unique=True)
     created_at: datetime = Field(default=datetime.today())
     updated_at: datetime = Field(default=datetime.now())
+    
+    __table_args__ = (
+        Index('ix_user_email', 'email')
+    )
 
 class UserCreate(UserBase):
     pass

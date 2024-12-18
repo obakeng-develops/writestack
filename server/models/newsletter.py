@@ -1,4 +1,4 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Index
 import uuid
 from datetime import datetime
 from helpers.generate_uuid import generate_uuid
@@ -11,6 +11,10 @@ class Newsletter(NewsletterBase, table=True):
     id: uuid.UUID = Field(default_factory=generate_uuid, primary_key=True, unique=True)
     created_at: datetime = Field(default=datetime.now())
     updated_at: datetime = Field(default=datetime.now())
+    
+    __table_args__ = (
+        Index('ix_newsletter_name', 'name')
+    )
 
 class NewsletterCreate(NewsletterBase):
     pass
