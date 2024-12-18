@@ -11,12 +11,13 @@ Following those blog posts, you can learn:
     - Sending metrics data to Prometheus
     - Setting and analyse important metric data (RED metrics)
 - Logs
-    - Setting up Vector & Clickhouse
-    - Forwarding app logs to Clickhouse
+    - Implementing canonical log lines
+    - Forwarding app logs to Clickhouse via Vector
     - Analysing the data via Grafana
+    - Using Loki
 - Traces
     - Adding trace instrumentation
-    - Setting up Tempo/Jaeger
+    - Setting up Tempo
 - SLOs/SLIs
     - Creating SLOs/SLIs
     - Using them to prioritize what to work on next
@@ -25,15 +26,14 @@ Following those blog posts, you can learn:
 
 ## The architecture
 It has a very simple architecture.
-
-![composition](https://github.com/user-attachments/assets/a3320abe-3098-46a0-96d4-a25194ebda09)
+![data-diagram](https://github.com/user-attachments/assets/d485a713-734b-44c2-bc89-4c3a14699f13)
 
 - Backend
     - FastAPI
 - Frontend:
-    - Svelte
+    - TBD
 - Store
     - Postgres
 
 ## The data model
-![writestack](https://github.com/user-attachments/assets/d5b81c12-d188-45cc-a25f-e6de17b8e3fd)
+![umd](https://github.com/user-attachments/assets/2a23c2d1-7682-4c12-a890-3983e85c27f5)
