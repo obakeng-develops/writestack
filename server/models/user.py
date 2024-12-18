@@ -13,7 +13,7 @@ class User(UserBase, table=True):
     updated_at: datetime = Field(default=datetime.now())
     
     __table_args__ = (
-        Index('ix_user_email', 'email')
+        Index('ix_user_email', 'email'),
     )
 
 class UserCreate(UserBase):

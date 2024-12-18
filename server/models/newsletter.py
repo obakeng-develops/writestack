@@ -13,7 +13,7 @@ class Newsletter(NewsletterBase, table=True):
     updated_at: datetime = Field(default=datetime.now())
     
     __table_args__ = (
-        Index('ix_newsletter_name', 'name')
+        Index('ix_newsletter_name', 'name'),
     )
 
 class NewsletterCreate(NewsletterBase):

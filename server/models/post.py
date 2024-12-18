@@ -15,7 +15,7 @@ class Post(PostBase, table=True):
     updated_at: datetime = Field(default=datetime.now())
     
     __table_args__ = (
-        Index('ix_newsletter_id', 'newsletter')
+        Index('ix_newsletter_id', 'newsletter'),
     )
 
 class PostCreate(PostBase):
