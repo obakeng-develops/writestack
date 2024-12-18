@@ -1,7 +1,7 @@
 ## Overview
 Writestack is a mini-version of Substack for observability-learning purposes.
 
-The idea with this is to teach the 3 signals of observability (metrics, traces and logs) from the ground up.
+The idea with this is to teach the 3 signals of observability (metrics, traces and logs) from the ground up and eventually look into Observability 2.0
 
 The relevant blog series for this is on my [Substack](http://obakeng.substack.com).
 
