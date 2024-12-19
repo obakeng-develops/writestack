@@ -9,9 +9,6 @@ import uuid
 import sys
 import fastapi
 
-python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-fastapi_version = fastapi.__version__
-
 router = APIRouter(
     prefix="/users",
     tags=["users"],
