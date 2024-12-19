@@ -1,4 +1,6 @@
 import structlog
+import fastapi
+import sys
 
 # configure structlog
 structlog.configure(
@@ -11,3 +13,5 @@ structlog.configure(
 )
 
 logger = structlog.get_logger()
+python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+fastapi_version = fastapi.__version__
