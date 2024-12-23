@@ -31,7 +31,7 @@ async def get_comment(comment_uuid: uuid.UUID, request: Request, session: Sessio
         comment_logger.error("comment.search.failed", detail="Comment not found", status_code=404)
         raise HTTPException(status_code=404, detail='Comment not found')
     
-    comment_logger.info("comment.search.success", status_code=200)
+    comment_logger.info("comment.search.success", detail="Comment found", status_code=200)
     return comment
 
 @router.post("/", response_model=CommentPublic, status_code=status.HTTP_201_CREATED)
@@ -49,7 +49,7 @@ async def create_comment(comment: CommentCreate, request: Request, session: Sess
     comment_logger.info("comment.creation.database_commmit.success")
     session.refresh(create_comment)
     
-    comment_logger.info("comment.creation.success")
+    comment_logger.info("comment.creation.success", comment_id=str(create_comment.id), detail="Comment created", status_code=201)
     return create_comment
 
 @router.patch("/{comment_uuid}", response_model=CommentPublic, status_code=status.HTTP_200_OK)
@@ -74,7 +74,7 @@ async def update_comment(comment_uuid: uuid.UUID, updated_comment: CommentUpdate
     comment_logger.info("comment.update.database_commit.success")
     session.refresh(comment)
     
-    comment_logger.info("comment.update.success")
+    comment_logger.info("comment.update.success", detail="Comment updated", status_code=200)
     return comment
 
 @router.delete("/{comment_uuid}", status_code=status.HTTP_200_OK)
@@ -93,7 +93,7 @@ async def delete_comment(comment_uuid: uuid.UUID, request: Request, session: Ses
     comment_logger.info("comment.delete.started")
     session.delete(comment)
     session.commit()
-    comment_logger.info("comment.delete.success")
+    comment_logger.info("comment.delete.success", detail="Comment deleted", status_code=200)
     
     return {
         "message": "Comment deleted successfully"
