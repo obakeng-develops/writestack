@@ -48,7 +48,7 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, request: Request, 
         newsletter_logger.error("newsletter.search.failed", detail="No posts found", status_code=404)
         raise HTTPException(status_code=404, details='There are no posts')
 
-    newsletter_logger.info("newsletter.search.status", status_code=200)
+    newsletter_logger.info("newsletter.search.status", detail="Posts found", status_code=200)
     return posts
 
 @router.patch("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
