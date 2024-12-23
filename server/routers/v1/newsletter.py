@@ -32,7 +32,7 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, request: Request, session: 
         newsletter_logger.error("newsletter.search.failed", detail="Newsletter not found", status_code=404)
         raise HTTPException(status_code=404, detail='Newsletter not found')
     
-    newsletter_logger.info("newsletter.search.success", status_code=200)
+    newsletter_logger.info("newsletter.search.success", detail="Newsletter found", status_code=200)
     return newsletter
 
 @router.get("/posts/{newsletter_uuid}", response_model=List[PostPublic], status_code=status.HTTP_200_OK)
@@ -72,7 +72,7 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     session.add(newsletter)
     newsletter_logger.info("newsletter.update.database_commit.success")
     session.commit()
-    newsletter_logger.info("newsletter.update.success", status_code=200)
+    newsletter_logger.info("newsletter.update.success", detail="Newsletter updated", status_code=200)
     session.refresh(newsletter)
     return newsletter
 
@@ -89,6 +89,6 @@ async def create_newsletter(newsletter: NewsletterCreate, request: Request, sess
     session.add(create_newsletter)
     newsletter_logger.info("newsletter.creation.database_commit.success")
     session.commit()
-    newsletter_logger.info("newsletter.creation.success", status_code=200)
+    newsletter_logger.info("newsletter.creation.success", detail="Newsletter created", newsletter_id=str(create_newsletter.id), status_code=201)
     session.refresh(create_newsletter)
     return create_newsletter

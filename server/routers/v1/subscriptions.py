@@ -31,7 +31,7 @@ async def get_all_subscriptions_for_newsletter(newsletter_uuid: uuid.UUID, reque
         subscription_logger.error("subscriptions.search.failed", detail="No subscriptions found for the given newsletter", status_code=404)
         raise HTTPException(status_code=404, detail='No subscriptions found for the given newsletter')
 
-    subscription_logger.info("subscriptions.search.success", status_code=200)
+    subscription_logger.info("subscriptions.search.success", detail="Subscriptions found", status_code=200)
     return subscriptions
 
 @router.post("/", response_model=SubscriptionPublic, status_code=status.HTTP_200_OK)
