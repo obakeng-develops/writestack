@@ -25,7 +25,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 async def get_post(post_uuid: uuid.UUID, request: Request, session: SessionDep) -> Post:
     # logging
     user_agent = request.headers.get('User-Agent')
-    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=post_uuid, host=request.client.host)
+    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=str(post_uuid), host=request.client.host)
     
     post_logger.info("post.search.started")
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
@@ -41,7 +41,7 @@ async def get_post(post_uuid: uuid.UUID, request: Request, session: SessionDep) 
 async def delete_post(post_uuid: uuid.UUID, request: Request, session: SessionDep):
     # logging
     user_agent = request.headers.get('User-Agent')
-    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=post_uuid, host=request.client.host)
+    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=str(post_uuid), host=request.client.host)
     
     post_logger.info("post.search.started")
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
@@ -64,7 +64,7 @@ async def delete_post(post_uuid: uuid.UUID, request: Request, session: SessionDe
 async def get_all_comments_for_post(post_uuid: uuid.UUID, request: Request, session: SessionDep) -> List[Comment]:
     # logging
     user_agent = request.headers.get('User-Agent')
-    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=post_uuid, host=request.client.host)
+    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=str(post_uuid), host=request.client.host)
     
     post_logger.info("comments.search.started")
     comments = session.exec(select(Comment).where(Comment.post == post_uuid)).all()
@@ -98,7 +98,7 @@ async def create_post(post: PostCreate, request: Request, session: SessionDep) -
 async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, request: Request, session: SessionDep) -> Post:
     # logging 
     user_agent = request.headers.get('User-Agent')
-    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=post_uuid, host=request.client.host)
+    post_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, post_id=str(post_uuid), host=request.client.host)
     
     post_logger.info("post.search.started")
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
