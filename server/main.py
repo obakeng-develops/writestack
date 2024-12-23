@@ -14,7 +14,7 @@ load_dotenv()
 
 app = FastAPI()
 
-instrumentator = Instrumentator().instrument(app)
+instrumentator = Instrumentator().instrument(app) 
 
 @app.on_event("startup")
 def on_startup():
