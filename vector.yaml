@@ -1,7 +1,7 @@
 sources:
   webserver:
     type: docker_logs
-    exclude_containers: ["observability-clickhouse-1", "observability-grafana-1", "observability-prometheus-1"]
+    exclude_containers: ["observability-clickhouse-1", "observability-grafana-1", "observability-prometheus-1", "observability-loki-1"]
 
 transforms:
   remap_webserver_logs:
