@@ -33,7 +33,7 @@ async def create_user(user: UserCreate, request: Request, session: SessionDep) -
     user_logger.debug("user.creation.validation.success")
     user_logger.info("user.creation.database_commit.started")
     session.add(new_user)
-    user_logger.info("user.creation.database_commit.success", user_id=new_user.id)
+    user_logger.info("user.creation.database_commit.success", user_id=new_user.id, email=new_user.email)
     session.commit()
     user_logger.info("user.creation.success", user_id=str(new_user.id), detail="User created", status_code=201)
     session.refresh(new_user)
@@ -52,7 +52,7 @@ async def get_user(user_uuid: uuid.UUID, request: Request, session: SessionDep) 
         user_logger.error("user.search.failed", detail="User not found", status_code=404)
         raise HTTPException(status_code=404, detail='User not found')
     
-    user_logger.info("user.search.success", detail="User found", status_code=200)
+    user_logger.info("user.search.success", detail="User found", status_code=200, email=user.email)
     return user
 
 @router.patch("/{user_uuid}", response_model=UserPublic, status_code=status.HTTP_200_OK)
@@ -75,7 +75,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, request: R
     session.add(user)
     user_logger.info("user.update.database_commit.complete")
     session.commit()
-    user_logger.info("user.update.success", detail="User updated", status_code=200)
+    user_logger.info("user.update.success", detail="User updated", status_code=200, email=user.email)
     session.refresh(user)
     return user
 
@@ -92,5 +92,7 @@ async def get_newsletters_for_users(user_uuid: uuid.UUID, request: Request, sess
         user_logger.error("newsletter.search.failed", detail="No newsletters not found", status_code=404)
         raise HTTPException(status_code=404, detail='No newsletters found')
 
-    user_logger.info("newsletter.search.success", detail="Newsletters found", status_code=200)
+    newsletter_names = [newsletter.name for newsletter in newsletters]
+
+    user_logger.info("newsletter.search.success", detail="Newsletters found", status_code=200, newsletter_names=newsletter_names)
     return newsletters
