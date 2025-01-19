@@ -14,6 +14,13 @@ transforms:
       .fastapi_version = .fastapi_version
       .environment = .environment
       .service = .service
+      .newsletter_names = .newsletter_names
+      .email = .email
+      .newsletter_name = .newsletter_name
+      .subtitle = .subtitle
+      .published = .published
+      .post_newsletter_id = .post_newsletter_id
+      .posts = .posts
       .device_type = .device_type
       .detail = .detail
       .status_code = .status_code
@@ -73,4 +80,11 @@ sinks:
       level: "{{ level }}"               
       event: "{{ event }}"               
       entity_id: "{{ entity_id }}"
+      newsletter_names: "{{ newsletter_names }}"
+      email: "{{ email }}"
+      newsletter_name: "{{ newsletter_name }}"
+      subtitle: "{{ subtitle }}"
+      published: "{{ published }}"
+      post_newsletter_id: "{{ post_newsletter_id }}"
+      posts: "{{ posts }}"
 
