@@ -34,7 +34,7 @@ async def get_post(post_uuid: uuid.UUID, request: Request, session: SessionDep) 
         post_logger.error("post.search.failed", detail="Post not found", status_code=404)
         raise HTTPException(status_code=404, detail='Post not found')
     
-    post_logger.info("post.search.success", detail="Post found", status_code=200)
+    post_logger.info("post.search.success", detail="Post found", status_code=200, subtitle=post.subtitle, published=post.published, newsletter=post.newsletter)
     return post
 
 @router.delete("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)
@@ -73,7 +73,9 @@ async def get_all_comments_for_post(post_uuid: uuid.UUID, request: Request, sess
         post_logger.error("comment.search.failed", detail="Comment not found", status_code=404)
         raise HTTPException(status_code=404, detail='Comments not found')
     
-    post_logger.info("comments.search.success", detail="Comments found", status_code=200)
+    comment_data = [(comment.post, comment.user) for comment in comments]
+    
+    post_logger.info("comments.search.success", detail="Comments found", status_code=200, comments=comment_data)
     return comments
 
 @router.post("/", response_model=PostPublic, status_code=status.HTTP_201_CREATED)
@@ -91,7 +93,7 @@ async def create_post(post: PostCreate, request: Request, session: SessionDep) -
     session.commit()
     post_logger.info("post.creation.database_commit.success")
     session.refresh(create_post)
-    post_logger.info("post.creation.success", detail="Post created", status_code=201, post_id=str(create_post.id))
+    post_logger.info("post.creation.success", detail="Post created", status_code=201, post_id=str(create_post.id), subtitle=create_post.subtitle, published=create_post.published, newsletter=create_post.newsletter)
     return create_post
 
 @router.patch("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)
@@ -114,6 +116,6 @@ async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, request: R
     session.add(post)
     post_logger.info("post.update.database_commit.success")
     session.commit()
-    post_logger.info("post.update.success", status_code=200)
+    post_logger.info("post.update.success", status_code=200, subtitle=post.subtitle, published=post.published, newsletter=post.newsletter)
     session.refresh(post)
     return post
