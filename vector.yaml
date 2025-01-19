@@ -68,19 +68,16 @@ sinks:
     endpoint: http://localhost:3100
     encoding:
       codec: "json"
-    labels:
-      service: "{{ service }}"        
+    labels:       
       status_code: "{{ status_code }}"
       fastapi_version: "{{ fastapi_version }}"
       py_version: "{{ py_version }}"
-      environment: "{{ environment }}"   
-      host: "{{ host }}"                 
+      environment: "{{ environment }}"             
       route: "{{ route }}"               
       method: "{{ method }}"             
       level: "{{ level }}"               
       event: "{{ event }}"               
       entity_id: "{{ entity_id }}"
-      newsletter_names: "{{ newsletter_names }}"
       email: "{{ email }}"
       newsletter_name: "{{ newsletter_name }}"
       subtitle: "{{ subtitle }}"
