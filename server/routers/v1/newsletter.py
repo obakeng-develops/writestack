@@ -47,10 +47,8 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, request: Request, 
     if not posts:
         newsletter_logger.error("newsletter.search.failed", detail="No posts found", status_code=404)
         raise HTTPException(status_code=404, details='There are no posts')
-    
-    post_data = [(post.subtitle, post.published, post.newsletter) for post in posts]
 
-    newsletter_logger.info("newsletter.search.status", detail="Posts found", status_code=200, posts=post_data)
+    newsletter_logger.info("newsletter.search.status", detail="Posts found", status_code=200)
     return posts
 
 @router.patch("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
@@ -74,7 +72,7 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     session.add(newsletter)
     newsletter_logger.info("newsletter.update.database_commit.success")
     session.commit()
-    newsletter_logger.info("newsletter.update.success", detail="Newsletter updated", status_code=200, newsletter_name=newsletter.name)
+    newsletter_logger.info("newsletter.update.success", detail="Newsletter updated", status_code=200)
     session.refresh(newsletter)
     return newsletter
 
@@ -91,6 +89,6 @@ async def create_newsletter(newsletter: NewsletterCreate, request: Request, sess
     session.add(create_newsletter)
     newsletter_logger.info("newsletter.creation.database_commit.success")
     session.commit()
-    newsletter_logger.info("newsletter.creation.success", detail="Newsletter created", newsletter_id=str(create_newsletter.id), status_code=201, newsletter_name=create_newsletter.name)
+    newsletter_logger.info("newsletter.creation.success", detail="Newsletter created", newsletter_id=str(create_newsletter.id), status_code=201)
     session.refresh(create_newsletter)
     return create_newsletter

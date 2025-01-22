@@ -33,7 +33,7 @@ async def create_user(user: UserCreate, request: Request, session: SessionDep) -
     user_logger.debug("user.creation.validation.success")
     user_logger.info("user.creation.database_commit.started")
     session.add(new_user)
-    user_logger.info("user.creation.database_commit.success", user_id=new_user.id, email=new_user.email)
+    user_logger.info("user.creation.database_commit.success", user_id=new_user.id)
     session.commit()
     user_logger.info("user.creation.success", user_id=str(new_user.id), detail="User created", status_code=201)
     session.refresh(new_user)
@@ -92,7 +92,5 @@ async def get_newsletters_for_users(user_uuid: uuid.UUID, request: Request, sess
         user_logger.error("newsletter.search.failed", detail="No newsletters not found", status_code=404)
         raise HTTPException(status_code=404, detail='No newsletters found')
 
-    newsletter_names = [newsletter.name for newsletter in newsletters]
-
-    user_logger.info("newsletter.search.success", detail="Newsletters found", status_code=200, newsletter_names=newsletter_names)
+    user_logger.info("newsletter.search.success", detail="Newsletters found", status_code=200)
     return newsletters
