@@ -14,10 +14,6 @@ transforms:
       .fastapi_version = .fastapi_version
       .environment = .environment
       .service = .service
-      .email = .email
-      .subtitle = .subtitle
-      .published = .published
-      .posts = .posts
       .device_type = .device_type
       .detail = .detail
       .status_code = .status_code
@@ -34,6 +30,12 @@ transforms:
       } else if exists(.newsletter_id) {
         .entity_id = .newsletter_id
       }
+      } else if exists(.comment_id) {
+        .entity_id = .comment_id
+      }
+      } else if exists(.subscription_id) {
+        .entity_id = .subscription_id
+      }
       # Transform the timestamp to ClickHouse-compatible format
       if exists(.timestamp) {
         # Replace 'T' with a space
@@ -49,15 +51,15 @@ transforms:
     condition: 'exists(.event)'
 
 sinks:
-  clickhouse:
-    inputs:
-      - filter_logs
-    type: clickhouse
-    database: logs
-    endpoint: http://localhost:8123
-    table: application_logs
-    healthcheck:
-      enabled: true
+  # clickhouse:
+  #   inputs:
+  #     - filter_logs
+  #   type: clickhouse
+  #   database: logs
+  #   endpoint: http://localhost:8123
+  #   table: application_logs
+  #   healthcheck:
+  #     enabled: true
   loki:
     type: loki
     inputs:
