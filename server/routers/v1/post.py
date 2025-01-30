@@ -31,10 +31,10 @@ async def get_post(post_uuid: uuid.UUID, request: Request, session: SessionDep) 
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if not post:
-        post_logger.error("post.search.failed", detail="Post not found", status_code=404)
-        raise HTTPException(status_code=404, detail='Post not found')
+        post_logger.error("post.search.failed", detail="Post not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Post not found')
     
-    post_logger.info("post.search.success", detail="Post found", status_code=200, subtitle=post.subtitle, published=post.published)
+    post_logger.info("post.search.success", detail="Post found", status_code=status.HTTP_200_OK, subtitle=post.subtitle, published=post.published)
     return post
 
 @router.delete("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)
@@ -47,14 +47,14 @@ async def delete_post(post_uuid: uuid.UUID, request: Request, session: SessionDe
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if not post:
-        post_logger.error("post.search.failed", detail="User not found", status_code=404)
-        raise HTTPException(status_code=404, detail='Post not found')
+        post_logger.error("post.search.failed", detail="User not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Post not found')
     
     post_logger.info("post.delete.started")
     session.delete(post)
     post_logger.info("post.delete.database_commit.started")
     session.commit()
-    post_logger.info("post.delete.database_commit.success", detail="Post deleted", status_code=200)
+    post_logger.info("post.delete.database_commit.success", detail="Post deleted", status_code=status.HTTP_200_OK)
 
     return {
         "message": "Post deleted successfully."
@@ -70,10 +70,10 @@ async def get_all_comments_for_post(post_uuid: uuid.UUID, request: Request, sess
     comments = session.exec(select(Comment).where(Comment.post == post_uuid)).all()
 
     if not comments:
-        post_logger.error("comment.search.failed", detail="Comment not found", status_code=404)
-        raise HTTPException(status_code=404, detail='Comments not found')
+        post_logger.error("comment.search.failed", detail="Comment not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comments not found')
     
-    post_logger.info("comments.search.success", detail="Comments found", status_code=200)
+    post_logger.info("comments.search.success", detail="Comments found", status_code=status.HTTP_200_OK)
     return comments
 
 @router.post("/", response_model=PostPublic, status_code=status.HTTP_201_CREATED)
@@ -91,7 +91,7 @@ async def create_post(post: PostCreate, request: Request, session: SessionDep) -
     session.commit()
     post_logger.info("post.creation.database_commit.success")
     session.refresh(create_post)
-    post_logger.info("post.creation.success", detail="Post created", status_code=201, post_id=str(create_post.id), subtitle=create_post.subtitle, published=create_post.published)
+    post_logger.info("post.creation.success", detail="Post created", status_code=status.HTTP_201_CREATED, post_id=str(create_post.id), subtitle=create_post.subtitle, published=create_post.published)
     return create_post
 
 @router.patch("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)
@@ -104,8 +104,8 @@ async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, request: R
     post = session.exec(select(Post).where(Post.id == post_uuid)).first()
 
     if not post:
-        post_logger.error("post.search.failed", detail="Post not found", status_code=404)
-        raise HTTPException(status_code=404, detail='Post not found')
+        post_logger.error("post.search.failed", detail="Post not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Post not found')
     
     post_logger.info("post.update.data_received")
     post_data = updated_post.model_dump(exclude_unset=True)
@@ -114,6 +114,6 @@ async def update_post(post_uuid: uuid.UUID, updated_post: PostUpdate, request: R
     session.add(post)
     post_logger.info("post.update.database_commit.success")
     session.commit()
-    post_logger.info("post.update.success", status_code=200, subtitle=post.subtitle, published=post.published)
+    post_logger.info("post.update.success", status_code=status.HTTP_200_OK, subtitle=post.subtitle, published=post.published)
     session.refresh(post)
     return post

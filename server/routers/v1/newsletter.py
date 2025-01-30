@@ -29,10 +29,10 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, request: Request, session: 
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
     if not newsletter:
-        newsletter_logger.error("newsletter.search.failed", detail="Newsletter not found", status_code=404)
-        raise HTTPException(status_code=404, detail='Newsletter not found')
+        newsletter_logger.error("newsletter.search.failed", detail="Newsletter not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Newsletter not found')
     
-    newsletter_logger.info("newsletter.search.success", detail="Newsletter found", status_code=200, newsletter_name=newsletter.name)
+    newsletter_logger.info("newsletter.search.success", detail="Newsletter found", status_code=status.HTTP_200_OK, newsletter_name=newsletter.name)
     return newsletter
 
 @router.get("/posts/{newsletter_uuid}", response_model=List[PostPublic], status_code=status.HTTP_200_OK)
@@ -45,10 +45,10 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, request: Request, 
     posts = session.exec(select(Post).where(Post.newsletter == newsletter_uuid)).all()
 
     if not posts:
-        newsletter_logger.error("newsletter.search.failed", detail="No posts found", status_code=404)
-        raise HTTPException(status_code=404, details='There are no posts')
+        newsletter_logger.error("newsletter.search.failed", detail="No posts found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, details='There are no posts')
 
-    newsletter_logger.info("newsletter.search.status", detail="Posts found", status_code=200)
+    newsletter_logger.info("newsletter.search.status", detail="Posts found", status_code=status.HTTP_200_OK)
     return posts
 
 @router.patch("/{newsletter_uuid}", response_model=NewsletterPublic, status_code=status.HTTP_200_OK)
@@ -61,8 +61,8 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
 
     if not newsletter:
-        newsletter_logger.error("newsletter.search.failed", detail="Newsletter not found", status_code=400)
-        raise HTTPException(status_code=404, detail='Newsletter not found')
+        newsletter_logger.error("newsletter.search.failed", detail="Newsletter not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Newsletter not found')
     
     newsletter_logger.info("newsletter.update.data_received")
     
@@ -72,7 +72,7 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
     session.add(newsletter)
     newsletter_logger.info("newsletter.update.database_commit.success")
     session.commit()
-    newsletter_logger.info("newsletter.update.success", detail="Newsletter updated", status_code=200)
+    newsletter_logger.info("newsletter.update.success", detail="Newsletter updated", status_code=status.HTTP_200_OK)
     session.refresh(newsletter)
     return newsletter
 
@@ -89,6 +89,6 @@ async def create_newsletter(newsletter: NewsletterCreate, request: Request, sess
     session.add(create_newsletter)
     newsletter_logger.info("newsletter.creation.database_commit.success")
     session.commit()
-    newsletter_logger.info("newsletter.creation.success", detail="Newsletter created", newsletter_id=str(create_newsletter.id), status_code=201)
+    newsletter_logger.info("newsletter.creation.success", detail="Newsletter created", newsletter_id=str(create_newsletter.id), status_code=status.HTTP_201_CREATED)
     session.refresh(create_newsletter)
     return create_newsletter

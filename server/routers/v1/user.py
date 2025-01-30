@@ -6,8 +6,6 @@ from models.newsletter import Newsletter, NewsletterPublic
 from helpers.database import get_session
 from helpers.logging import logger, global_logger
 import uuid
-import sys
-import fastapi
 
 router = APIRouter(
     prefix="/users",
@@ -35,7 +33,7 @@ async def create_user(user: UserCreate, request: Request, session: SessionDep) -
     session.add(new_user)
     user_logger.info("user.creation.database_commit.success", user_id=new_user.id)
     session.commit()
-    user_logger.info("user.creation.success", user_id=str(new_user.id), detail="User created", status_code=201)
+    user_logger.info("user.creation.success", user_id=str(new_user.id), detail="User created", status_code=status.HTTP_201_CREATED)
     session.refresh(new_user)
     return new_user
 
@@ -49,10 +47,10 @@ async def get_user(user_uuid: uuid.UUID, request: Request, session: SessionDep) 
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
     if not user:
-        user_logger.error("user.search.failed", detail="User not found", status_code=404)
-        raise HTTPException(status_code=404, detail='User not found')
+        user_logger.error("user.search.failed", detail="User not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
     
-    user_logger.info("user.search.success", detail="User found", status_code=200, email=user.email)
+    user_logger.info("user.search.success", detail="User found", status_code=status.HTTP_200_OK, email=user.email)
     return user
 
 @router.patch("/{user_uuid}", response_model=UserPublic, status_code=status.HTTP_200_OK)
@@ -65,8 +63,8 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, request: R
     user = session.exec(select(User).where(User.id == user_uuid)).first()
 
     if not user:
-        user_logger.error("user.search.failed", detail="User not found", status_code=404)
-        raise HTTPException(status_code=404, detail='User not found')
+        user_logger.error("user.search.failed", detail="User not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
     
     user_logger.info("user.update.data_received")
     user_data = updated_user.model_dump(exclude_unset=True)
@@ -75,7 +73,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, request: R
     session.add(user)
     user_logger.info("user.update.database_commit.complete")
     session.commit()
-    user_logger.info("user.update.success", detail="User updated", status_code=200, email=user.email)
+    user_logger.info("user.update.success", detail="User updated", status_code=status.HTTP_200_OK, email=user.email)
     session.refresh(user)
     return user
 
@@ -89,8 +87,8 @@ async def get_newsletters_for_users(user_uuid: uuid.UUID, request: Request, sess
     newsletters = session.exec(select(Newsletter).where(Newsletter.user == user_uuid)).all()
 
     if not newsletters:
-        user_logger.error("newsletter.search.failed", detail="No newsletters not found", status_code=404)
-        raise HTTPException(status_code=404, detail='No newsletters found')
+        user_logger.error("newsletter.search.failed", detail="No newsletters not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No newsletters found')
 
-    user_logger.info("newsletter.search.success", detail="Newsletters found", status_code=200)
+    user_logger.info("newsletter.search.success", detail="Newsletters found", status_code=status.HTTP_200_OK)
     return newsletters

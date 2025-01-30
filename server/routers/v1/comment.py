@@ -62,8 +62,8 @@ async def update_comment(comment_uuid: uuid.UUID, updated_comment: CommentUpdate
     comment = session.get(Comment, comment_uuid)
     
     if not comment:
-        comment_logger.error("comment.search.failed", detail="Comment not found", status_code=404)
-        raise HTTPException(status_code=404, detail='Comment not found')
+        comment_logger.error("comment.search.failed", detail="Comment not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comment not found')
     
     comment_logger.info("comment.update.data_received")
     comment_data = updated_comment.model_dump(exclude_unset=True)
@@ -74,7 +74,7 @@ async def update_comment(comment_uuid: uuid.UUID, updated_comment: CommentUpdate
     comment_logger.info("comment.update.database_commit.success")
     session.refresh(comment)
     
-    comment_logger.info("comment.update.success", detail="Comment updated", status_code=200)
+    comment_logger.info("comment.update.success", detail="Comment updated", status_code=status.HTTP_200_OK)
     return comment
 
 @router.delete("/{comment_uuid}", status_code=status.HTTP_200_OK)
@@ -87,13 +87,13 @@ async def delete_comment(comment_uuid: uuid.UUID, request: Request, session: Ses
     comment = session.get(Comment, comment_uuid)
     
     if not comment:
-        comment_logger.error("comment.search.failed", detail="Comment not found", status_code=404)
-        raise HTTPException(status_code=404, detail='Comment not found')
+        comment_logger.error("comment.search.failed", detail="Comment not found", status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comment not found')
     
     comment_logger.info("comment.delete.started")
     session.delete(comment)
     session.commit()
-    comment_logger.info("comment.delete.success", detail="Comment deleted", status_code=200)
+    comment_logger.info("comment.delete.success", detail="Comment deleted", status_code=status.HTTP_200_OK)
     
     return {
         "message": "Comment deleted successfully"
