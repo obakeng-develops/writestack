@@ -32,7 +32,7 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, request: Request, session: 
         newsletter_logger.error("newsletter.search.failed", detail="Newsletter not found", status_code=status.HTTP_404_NOT_FOUND)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Newsletter not found')
     
-    newsletter_logger.info("newsletter.search.success", detail="Newsletter found", status_code=status.HTTP_200_OK, newsletter_name=newsletter.name)
+    newsletter_logger.info("newsletter.search.success", detail="Newsletter found", status_code=status.HTTP_200_OK)
     return newsletter
 
 @router.get("/posts/{newsletter_uuid}", response_model=List[PostPublic], status_code=status.HTTP_200_OK)
