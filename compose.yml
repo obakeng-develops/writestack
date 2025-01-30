@@ -30,5 +30,7 @@ services:
     image: grafana/loki:latest
     ports:
       - "3100:3100"
+    volumes:
+      - ./loki_config.yaml:/etc/loki/loki_config.yaml
 volumes:
   clickhouse_data:
