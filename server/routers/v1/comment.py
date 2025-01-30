@@ -49,7 +49,7 @@ async def create_comment(comment: CommentCreate, request: Request, session: Sess
     comment_logger.info("comment.creation.database_commmit.success")
     session.refresh(create_comment)
     
-    comment_logger.info("comment.creation.success", comment_id=str(create_comment.id), detail="Comment created", status_code=201)
+    comment_logger.info("comment.creation.success", detail="Comment created", status_code=201)
     return create_comment
 
 @router.patch("/{comment_uuid}", response_model=CommentPublic, status_code=status.HTTP_200_OK)

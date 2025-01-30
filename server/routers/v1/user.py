@@ -33,7 +33,7 @@ async def create_user(user: UserCreate, request: Request, session: SessionDep) -
     session.add(new_user)
     user_logger.info("user.creation.database_commit.success", user_id=new_user.id)
     session.commit()
-    user_logger.info("user.creation.success", user_id=str(new_user.id), detail="User created", status_code=status.HTTP_201_CREATED)
+    user_logger.info("user.creation.success", detail="User created", status_code=status.HTTP_201_CREATED)
     session.refresh(new_user)
     return new_user
 
@@ -50,7 +50,7 @@ async def get_user(user_uuid: uuid.UUID, request: Request, session: SessionDep) 
         user_logger.error("user.search.failed", detail="User not found", status_code=status.HTTP_404_NOT_FOUND)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
     
-    user_logger.info("user.search.success", detail="User found", status_code=status.HTTP_200_OK, email=user.email)
+    user_logger.info("user.search.success", detail="User found", status_code=status.HTTP_200_OK)
     return user
 
 @router.patch("/{user_uuid}", response_model=UserPublic, status_code=status.HTTP_200_OK)
@@ -73,7 +73,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, request: R
     session.add(user)
     user_logger.info("user.update.database_commit.complete")
     session.commit()
-    user_logger.info("user.update.success", detail="User updated", status_code=status.HTTP_200_OK, email=user.email)
+    user_logger.info("user.update.success", detail="User updated", status_code=status.HTTP_200_OK)
     session.refresh(user)
     return user
 
