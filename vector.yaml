@@ -29,10 +29,8 @@ transforms:
         .entity_id = .user_id
       } else if exists(.newsletter_id) {
         .entity_id = .newsletter_id
-      }
       } else if exists(.comment_id) {
         .entity_id = .comment_id
-      }
       } else if exists(.subscription_id) {
         .entity_id = .subscription_id
       }

@@ -77,6 +77,10 @@ class WebAPIBehaviour(HttpUser):
                     response.failure(f"Failed to create a post: {response.text}")       
         else:
             print("No newsletter IDs available")
+            
+        # Creating a subscription
+        
+        # Creating a post
 
     @task
     def get_users(self):
