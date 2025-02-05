@@ -35,18 +35,34 @@ async def get_all_subscriptions_for_newsletter(newsletter_uuid: uuid.UUID, reque
     return subscriptions
 
 @router.post("/", response_model=SubscriptionPublic, status_code=status.HTTP_200_OK)
-async def create_subscription(subscription: SubscriptionCreate, session: SessionDep) -> Subscription:
+async def create_subscription(subscription: SubscriptionCreate, request: Request, session: SessionDep) -> Subscription:
+    # logging
+    user_agent = request.headers.get('User-Agent')
+    subscription_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, host=request.client.host, route_prefix=router.prefix)
+    
+    subscription_logger.debug("subscription.creation.validation.started")
     new_subscription = Subscription.model_validate(subscription)
+    subscription_logger.debug("subscription.creation.validation.success")
+    subscription_logger.info("subscription.creation.database_commit.started")
     session.add(new_subscription)
+    subscription_logger.info("subscription.creation.database_commit.success")
     session.commit()
+    subscription_logger.info("subscription.creation.success", detail="Subscription created", status_code=status.HTTP_201_CREATED, subscription_id=new_subscription.id)
     session.refresh(new_subscription)
     return new_subscription
 
 @router.get("/{subscription_uuid}", response_model=SubscriptionPublic, status_code=status.HTTP_200_OK)
-async def get_subscription(subscription_uuid: uuid.UUID, session: SessionDep) -> Subscription:
+async def get_subscription(subscription_uuid: uuid.UUID, request: Request, session: SessionDep) -> Subscription:
+    # logging
+    user_agent = request.headers.get('User-Agent')
+    subscription_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, host=request.client.host, route_prefix=router.prefix)
+    
+    subscription_logger.debug("subscription.search.started")
     subscription = session.exec(select(Subscription).where(Subscription.id == subscription_uuid)).first()
 
     if not subscription:
+        subscription_logger.error("subscription.search.failed", detail="Subscription not found", status_code=status.HTTP_404_NOT_FOUND)
         raise HTTPException(status_code=404, detail='Subscription not found')
     
+    subscription_logger.info("subscription.search.success", detail="Subscription found", status_code=status.HTTP_200_OK)
     return subscription
