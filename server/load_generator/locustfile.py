@@ -108,10 +108,10 @@ class WebAPIBehaviour(HttpUser):
         if self.post_ids and self.user_ids:
             post_uuid = random.choice(self.post_ids)
             user_uuid = random.choice(self.user_ids)
-            comments_payload = random.choice(comments_payloads)
+            comment_payload = random.choice(comments_payloads)
             
             augmented_payload = {
-                **comments_payloads,
+                **comment_payload,
                 "post": post_uuid,
                 "user": user_uuid
             }
