@@ -43,27 +43,61 @@ transforms:
         .timestamp = replace(.timestamp, r'\.\d+Z$', "")
         .timestamp = replace(.timestamp, r'Z$', "")
       }
-  filter_logs:
+
+  remap_clickhouse_logs:
+    type: remap
+    inputs:
+      - remap_webserver_logs
+    source: |
+      .log_level = .level
+      .message = .message
+      .timestamp = .timestamp
+      del(.py_version)
+      del(.fastapi_version)
+      del(.environment)
+      del(.service)
+      del(.device_type)
+      del(.status_code)
+      del(.http_scheme)
+      del(.route_path)
+      del(.route_prefix)
+      del(.method)
+      del(.host)
+      del(.entity_id)
+      del(.post_id)
+      del(.newsletter_id)
+      del(.comment_id)
+      del(.user_id)
+      del(.subscription_id)
+
+  filter_webserver_logs:
     type: filter
     inputs:
       - remap_webserver_logs
     condition: 'exists(.event)'
+
+  filter_clickhouse_logs:
+    type: filter
+    inputs:
+      - remap_clickhouse_logs
+    condition: 'exists(.message)'
+
   sample_logs:
     type: sample
     inputs:
-      - filter_logs
+      - filter_webserver_logs
     rate: 100
 
 sinks:
-  # clickhouse:
-  #   inputs:
-  #     - filter_logs
-  #   type: clickhouse
-  #   database: logs
-  #   endpoint: http://localhost:8123
-  #   table: application_logs
-  #   healthcheck:
-  #     enabled: true
+  clickhouse:
+    inputs:
+      - filter_clickhouse_logs
+    type: clickhouse
+    database: logs
+    endpoint: http://localhost:8123
+    table: application_logs
+    healthcheck:
+      enabled: true
   loki:
     type: loki
     inputs:
