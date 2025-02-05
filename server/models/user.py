@@ -1,6 +1,7 @@
 from sqlmodel import Field, SQLModel, Index
 import uuid
 from datetime import datetime
+from typing import Optional
 
 class UserBase(SQLModel):
     first_name: str = Field(max_length=50)
@@ -23,6 +24,6 @@ class UserPublic(UserBase):
     id: uuid.UUID
 
 class UserUpdate(SQLModel):
-    first_name: str | None = None
-    last_name: str | None = None
-    email: str | None = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[str] = None

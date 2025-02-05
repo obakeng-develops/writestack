@@ -2,6 +2,7 @@ from sqlmodel import Field, SQLModel, Index
 import uuid
 from datetime import datetime
 from helpers.generate_uuid import generate_uuid
+from typing import Optional
 
 class NewsletterBase(SQLModel):
     user: uuid.UUID = Field(foreign_key='user.id')
@@ -23,5 +24,5 @@ class NewsletterPublic(NewsletterBase):
     id: uuid.UUID
     
 class NewsletterUpdate(SQLModel):
-    user: uuid.UUID
-    name: str
+    user: Optional[uuid.UUID] = None
+    name: Optional[str] = None
