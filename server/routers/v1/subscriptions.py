@@ -22,7 +22,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 async def get_all_subscriptions_for_newsletter(newsletter_uuid: uuid.UUID, request: Request, session: SessionDep) -> List[Subscription]:
     # logging
     user_agent = request.headers.get('User-Agent')
-    subscription_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host)
+    subscription_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host, route_prefix=router.prefix)
     
     subscription_logger.info("subscriptions.search.started")
     subscriptions = session.exec(select(Subscription).where(Subscription.newsletter == newsletter_uuid).limit(10)).all()

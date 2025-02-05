@@ -24,7 +24,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 async def create_user(user: UserCreate, request: Request, session: SessionDep) -> User:
     # logging
     user_agent = request.headers.get('User-Agent')
-    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, host=request.client.host)
+    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, host=request.client.host, route_prefix=router.prefix)
     
     user_logger.debug("user.creation.validation.started")
     new_user = User.model_validate(user)
@@ -41,7 +41,7 @@ async def create_user(user: UserCreate, request: Request, session: SessionDep) -
 async def get_user(user_uuid: uuid.UUID, request: Request, session: SessionDep) -> User:
     # logging
     user_agent = request.headers.get('User-Agent')
-    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, user_id=str(user_uuid), host=request.client.host)
+    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, user_id=str(user_uuid), host=request.client.host, route_prefix=router.prefix)
     
     user_logger.debug("user.search.started")
     user = session.exec(select(User).where(User.id == user_uuid)).first()
@@ -57,7 +57,7 @@ async def get_user(user_uuid: uuid.UUID, request: Request, session: SessionDep) 
 async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, request: Request, session: SessionDep) -> User:
     # logging
     user_agent = request.headers.get('User-Agent')
-    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, user_id=str(user_uuid), host=request.client.host)
+    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, user_id=str(user_uuid), host=request.client.host, route_prefix=router.prefix)
     
     user_logger.debug("user.search.started")
     user = session.exec(select(User).where(User.id == user_uuid)).first()
@@ -81,7 +81,7 @@ async def update_user(user_uuid: uuid.UUID, updated_user: UserUpdate, request: R
 async def get_newsletters_for_users(user_uuid: uuid.UUID, request: Request, session: SessionDep) -> List[Newsletter]:
     # logging
     user_agent = request.headers.get('User-Agent')
-    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, user_id=str(user_uuid), host=request.client.host)
+    user_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, user_id=str(user_uuid), host=request.client.host, route_prefix=router.prefix)
     
     user_logger.debug("newsletter.search.started")
     newsletters = session.exec(select(Newsletter).where(Newsletter.user == user_uuid)).all()

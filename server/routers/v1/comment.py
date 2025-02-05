@@ -22,7 +22,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 async def get_comment(comment_uuid: uuid.UUID, request: Request, session: SessionDep) -> Comment:
     # logging
     user_agent = request.headers.get('User-Agent')
-    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, comment_id=str(comment_uuid), host=request.client.host)
+    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, comment_id=str(comment_uuid), host=request.client.host, route_prefix=router.prefix)
     
     comment_logger.info("comment.search.started")
     comment = session.get(Comment, comment_uuid)
@@ -38,7 +38,7 @@ async def get_comment(comment_uuid: uuid.UUID, request: Request, session: Sessio
 async def create_comment(comment: CommentCreate, request: Request, session: SessionDep) -> Comment:
     # logging
     user_agent = request.headers.get('User')
-    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, host=request.client.host)
+    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, host=request.client.host, route_prefix=router.prefix)
     
     comment_logger.info("comment.validation.started")
     create_comment = Comment.model_validate(comment)
@@ -56,7 +56,7 @@ async def create_comment(comment: CommentCreate, request: Request, session: Sess
 async def update_comment(comment_uuid: uuid.UUID, updated_comment: CommentUpdate, request: Request, session: SessionDep) -> Comment:
     # logging
     user_agent = request.headers.get('User')
-    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, comment_id=str(comment_uuid), host=request.client.host)
+    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, comment_id=str(comment_uuid), host=request.client.host, route_prefix=router.prefix)
     
     comment_logger.info("comment.search.started")
     comment = session.get(Comment, comment_uuid)
@@ -81,7 +81,7 @@ async def update_comment(comment_uuid: uuid.UUID, updated_comment: CommentUpdate
 async def delete_comment(comment_uuid: uuid.UUID, request: Request, session: SessionDep):
     # logging
     user_agent = request.headers.get('User')
-    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, comment_id=str(comment_uuid), host=request.client.host)
+    comment_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, comment_id=str(comment_uuid), host=request.client.host, route_prefix=router.prefix)
     
     comment_logger.info("comment.search.started")
     comment = session.get(Comment, comment_uuid)

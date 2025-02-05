@@ -23,7 +23,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 async def get_newsletter(newsletter_uuid: uuid.UUID, request: Request, session: SessionDep) -> Newsletter:
     #logging
     user_agent = request.headers.get('User-Agent')
-    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host)
+    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host, route_prefix=router.prefix)
     
     newsletter_logger.info("newesletter.search.started")
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
@@ -39,7 +39,7 @@ async def get_newsletter(newsletter_uuid: uuid.UUID, request: Request, session: 
 async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, request: Request, session: SessionDep) -> List[Post]:
     # logging
     user_agent = request.headers.get('User-Agent')
-    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host)
+    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host, route_prefix=router.prefix)
     
     newsletter_logger.info("posts.search.started")
     posts = session.exec(select(Post).where(Post.newsletter == newsletter_uuid)).all()
@@ -55,7 +55,7 @@ async def get_posts_by_newsletter(newsletter_uuid: uuid.UUID, request: Request, 
 async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: NewsletterUpdate, request: Request, session: SessionDep) -> Newsletter:
     # logging
     user_agent = request.headers.get('User-Agent')
-    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host)
+    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, newsletter_id=str(newsletter_uuid), host=request.client.host, route_prefix=router.prefix)
     
     newsletter_logger.info("newsletter.search.started")
     newsletter = session.exec(select(Newsletter).where(Newsletter.id == newsletter_uuid)).first()
@@ -80,7 +80,7 @@ async def update_newsletter(newsletter_uuid: uuid.UUID, updated_newsletter: News
 async def create_newsletter(newsletter: NewsletterCreate, request: Request, session: SessionDep) -> Newsletter:
     #logging
     user_agent = request.headers.get('User-Agent')
-    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route=request.url.path, method=request.method, host=request.client.host)
+    newsletter_logger = global_logger.bind(device_type=user_agent, http_scheme=request.url.scheme, route_path=request.url.path, method=request.method, host=request.client.host, route_prefix=router.prefix)
     
     newsletter_logger.info("newsletter.validation.started")
     create_newsletter = Newsletter.model_validate(newsletter)
