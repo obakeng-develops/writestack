@@ -1,11 +1,17 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Column
 import uuid
 from datetime import datetime
 from helpers.generate_uuid import generate_uuid
+from enum import Enum
+
+class SubscriptionType(str, Enum):
+    FREE = "free"
+    PAID = "paid"
 
 class SubscriptionBase(SQLModel):
     subscriber: uuid.UUID = Field(foreign_key='user.id')
     newsletter: uuid.UUID = Field(foreign_key='newsletter.id')
+    type: SubscriptionType
 
 class Subscription(SubscriptionBase, table=True):
     id: uuid.UUID = Field(default_factory=generate_uuid, primary_key=True, unique=True)
