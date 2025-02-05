@@ -18,7 +18,8 @@ transforms:
       .detail = .detail
       .status_code = .status_code
       .http_scheme = .http_scheme
-      .route = .route
+      .route_path = .route_path
+      .route_prefix = .route_prefix
       .method = .method
       .host = .host
       .event = .event
@@ -47,6 +48,11 @@ transforms:
     inputs:
       - remap_webserver_logs
     condition: 'exists(.event)'
+  sample_logs:
+    type: sample
+    inputs:
+      - filter_logs
+    rate: 100
 
 sinks:
   # clickhouse:
@@ -61,14 +67,13 @@ sinks:
   loki:
     type: loki
     inputs:
-      - filter_logs
+      - sample_logs
     endpoint: http://localhost:3100
     encoding:
       codec: "json"
       compression: gzip
     labels:       
-      status_code: "{{ status_code }}"
       environment: "{{ environment }}"             
-      route: "{{ route }}"               
+      route_prefix: "{{ route_prefix }}"               
       method: "{{ method }}"              
       event: "{{ event }}"
