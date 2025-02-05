@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Index
 import uuid
 from datetime import datetime
 from helpers.generate_uuid import generate_uuid
+from typing import Optional
 
 class PostBase(SQLModel):
     subtitle: str = Field(default=None, max_length=200)
@@ -25,7 +26,6 @@ class PostPublic(PostBase):
     id: uuid.UUID
     
 class PostUpdate(SQLModel):
-    subtitle: str
-    published: bool
-    newsletter: uuid.UUID
-    body: str
+    subtitle: Optional[str] = None
+    published: Optional[bool] = None
+    body: Optional[str] = None
