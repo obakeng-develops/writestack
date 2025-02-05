@@ -91,7 +91,7 @@ async def create_post(post: PostCreate, request: Request, session: SessionDep) -
     session.commit()
     post_logger.info("post.creation.database_commit.success")
     session.refresh(create_post)
-    post_logger.info("post.creation.success", detail="Post created", status_code=status.HTTP_201_CREATED)
+    post_logger.info("post.creation.success", detail="Post created", status_code=status.HTTP_201_CREATED, post_id=create_post.id)
     return create_post
 
 @router.patch("/{post_uuid}", response_model=PostPublic, status_code=status.HTTP_200_OK)

@@ -31,9 +31,9 @@ async def create_user(user: UserCreate, request: Request, session: SessionDep) -
     user_logger.debug("user.creation.validation.success")
     user_logger.info("user.creation.database_commit.started")
     session.add(new_user)
-    user_logger.info("user.creation.database_commit.success", user_id=new_user.id)
+    user_logger.info("user.creation.database_commit.success")
     session.commit()
-    user_logger.info("user.creation.success", detail="User created", status_code=status.HTTP_201_CREATED)
+    user_logger.info("user.creation.success", detail="User created", status_code=status.HTTP_201_CREATED, user_id=new_user.id)
     session.refresh(new_user)
     return new_user
 

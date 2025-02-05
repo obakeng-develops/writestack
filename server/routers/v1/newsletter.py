@@ -89,6 +89,6 @@ async def create_newsletter(newsletter: NewsletterCreate, request: Request, sess
     session.add(create_newsletter)
     newsletter_logger.info("newsletter.creation.database_commit.success")
     session.commit()
-    newsletter_logger.info("newsletter.creation.success", detail="Newsletter created", status_code=status.HTTP_201_CREATED)
+    newsletter_logger.info("newsletter.creation.success", detail="Newsletter created", status_code=status.HTTP_201_CREATED, newsletter_id=create_newsletter.id)
     session.refresh(create_newsletter)
     return create_newsletter
