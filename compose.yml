@@ -1,6 +1,6 @@
 services:
   webserver:
-    build: ./server
+    build: ./logging
     ports:
       - "8000:8000"
   prometheus:

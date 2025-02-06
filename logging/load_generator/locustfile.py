@@ -116,7 +116,7 @@ class WebAPIBehaviour(HttpUser):
                 "user": user_uuid
             }
             
-            with self.client.post("/comments", json=data_payload, catch_response=True) as response:
+            with self.client.post("/comments", json=augmented_payload, catch_response=True) as response:
                 if response.status_code == 201:
                     comment_id = response.json().get("id")
                     self.comment_ids.append(comment_id)
