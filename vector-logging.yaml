@@ -1,0 +1,127 @@
+sources:
+  webserver:
+    type: docker_logs
+    exclude_containers: ["observability-clickhouse-1", "observability-grafana-1", "observability-prometheus-1", "observability-loki-1"]
+
+transforms:
+  remap_webserver_logs:
+    type: remap
+    inputs:
+      - webserver
+    source: |
+      . = parse_json!(.message)
+      .py_version = .py_version
+      .fastapi_version = .fastapi_version
+      .environment = .environment
+      .service = .service
+      .device_type = .device_type
+      .detail = .detail
+      .status_code = .status_code
+      .http_scheme = .http_scheme
+      .route_path = .route_path
+      .route_prefix = .route_prefix
+      .method = .method
+      .host = .host
+      .event = .event
+      .level = .level
+      if exists(.post_id) {
+        .entity_id = .post_id
+      } else if exists(.user_id) {
+        .entity_id = .user_id
+      } else if exists(.newsletter_id) {
+        .entity_id = .newsletter_id
+      } else if exists(.comment_id) {
+        .entity_id = .comment_id
+      } else if exists(.subscription_id) {
+        .entity_id = .subscription_id
+      }
+      # Transform the timestamp to ClickHouse-compatible format
+      if exists(.timestamp) {
+        # Replace 'T' with a space
+        .timestamp = replace!(.timestamp, r'T', " ")
+        # Remove 'Z' and any milliseconds or microseconds
+        .timestamp = replace(.timestamp, r'\.\d+Z$', "")
+        .timestamp = replace(.timestamp, r'Z$', "")
+      }
+
+  remap_clickhouse_logs:
+    type: remap
+    inputs:
+      - webserver
+    source: |
+      . = parse_json!(.message)
+      .message = .
+      .log_level = .level
+      .event = .event
+      if exists(.timestamp) {
+        # Replace 'T' with a space
+        .timestamp = replace!(.timestamp, r'T', " ")
+        # Remove 'Z' and any milliseconds or microseconds
+        .timestamp = replace(.timestamp, r'\.\d+Z$', "")
+        .timestamp = replace(.timestamp, r'Z$', "")
+      }
+      del(.device_type)
+      del(.level)
+      del(.environment)
+      del(.py_version)
+      del(.fastapi_version)
+      del(.service)
+      del(.detail)
+      del(.host)
+      del(.status_code)
+      del(.http_scheme)
+      del(.route_path)
+      del(.route_prefix)
+      del(.method)
+      del(.user_id)
+      del(.subscription_id)
+      del(.comment_id)
+      del(.post_id)
+      del(.newsletter_id)
+      del(.db_duration_ms)
+
+  filter_webserver_logs:
+    type: filter
+    inputs:
+      - remap_webserver_logs
+    condition: 'exists(.event)'
+
+  filter_clickhouse_logs:
+    type: filter
+    inputs:
+      - remap_clickhouse_logs
+    condition: 'exists(.log_level)'
+
+  sample_logs:
+    type: sample
+    inputs:
+      - filter_webserver_logs
+    rate: 50
+
+sinks:
+  clickhouse:
+    inputs:
+      - filter_clickhouse_logs
+    type: clickhouse
+    database: logs
+    endpoint: http://localhost:8123
+    table: application_logs
+    healthcheck:
+      enabled: true
+    auth:
+      user: "logs_user"
+      password: "test123"
+      strategy: basic
+  loki:
+    type: loki
+    inputs:
+      - sample_logs
+    endpoint: http://localhost:3100
+    encoding:
+      codec: "json"
+      compression: gzip
+    labels:       
+      environment: "{{ environment }}"             
+      route_prefix: "{{ route_prefix }}"               
+      method: "{{ method }}"              
+      event: "{{ event }}"
