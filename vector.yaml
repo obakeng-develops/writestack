@@ -47,28 +47,37 @@ transforms:
   remap_clickhouse_logs:
     type: remap
     inputs:
-      - remap_webserver_logs
+      - webserver
     source: |
+      . = parse_json!(.message)
+      .message = .
       .log_level = .level
-      .message = .message
-      .timestamp = .timestamp
+      .event = .event
+      if exists(.timestamp) {
+        # Replace 'T' with a space
+        .timestamp = replace!(.timestamp, r'T', " ")
+        # Remove 'Z' and any milliseconds or microseconds
+        .timestamp = replace(.timestamp, r'\.\d+Z$', "")
+        .timestamp = replace(.timestamp, r'Z$', "")
+      }
+      del(.device_type)
+      del(.level)
+      del(.environment)
       del(.py_version)
       del(.fastapi_version)
-      del(.environment)
       del(.service)
-      del(.device_type)
+      del(.detail)
+      del(.host)
       del(.status_code)
       del(.http_scheme)
       del(.route_path)
       del(.route_prefix)
       del(.method)
-      del(.host)
-      del(.entity_id)
-      del(.post_id)
-      del(.newsletter_id)
-      del(.comment_id)
       del(.user_id)
       del(.subscription_id)
+      del(.comment_id)
+      del(.post_id)
+      del(.newsletter_id)
 
   filter_webserver_logs:
     type: filter
@@ -80,13 +89,13 @@ transforms:
     type: filter
     inputs:
       - remap_clickhouse_logs
-    condition: 'exists(.message)'
+    condition: 'exists(.log_level)'
 
   sample_logs:
     type: sample
     inputs:
       - filter_webserver_logs
-    rate: 100
+    rate: 50
 
 sinks:
   clickhouse:
@@ -98,6 +107,10 @@ sinks:
     table: application_logs
     healthcheck:
       enabled: true
+    auth:
+      user: "logs_user"
+      password: "test123"
+      strategy: basic
   loki:
     type: loki
     inputs:
