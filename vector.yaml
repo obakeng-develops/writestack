@@ -78,6 +78,7 @@ transforms:
       del(.comment_id)
       del(.post_id)
       del(.newsletter_id)
+      del(.db_duration_ms)
 
   filter_webserver_logs:
     type: filter
