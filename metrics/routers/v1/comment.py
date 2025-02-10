@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from models.comment import Comment, CommentCreate, CommentPublic, CommentUpdate
 from typing import Annotated, List
 from helpers.database import get_session
-from helpers.logging import global_logger
 import uuid
 import time
 

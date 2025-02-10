@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlmodel import Session, select
 from helpers.database import get_session
-from helpers.logging import logger, global_logger
 from models.post import Post, PostPublic, PostCreate, PostUpdate
 from models.comment import Comment, CommentPublic
 from datetime import datetime

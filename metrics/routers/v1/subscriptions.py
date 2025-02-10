@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlmodel import Session, select
 from helpers.database import get_session
-from helpers.logging import global_logger
 from models.subscription import Subscription, SubscriptionPublic, SubscriptionCreate
 from typing import Annotated, List
 import uuid

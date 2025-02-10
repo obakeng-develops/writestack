@@ -2,7 +2,6 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlmodel import Session, select
 from helpers.database import get_session
-from helpers.logging import global_logger
 from models.newsletter import Newsletter, NewsletterCreate, NewsletterPublic, NewsletterUpdate
 from models.post import Post, PostPublic
 import uuid

@@ -4,7 +4,6 @@ from sqlmodel import Session, select
 from models.user import User, UserCreate, UserPublic, UserUpdate
 from models.newsletter import Newsletter, NewsletterPublic
 from helpers.database import get_session
-from helpers.logging import logger, global_logger
 import uuid
 import time
 
